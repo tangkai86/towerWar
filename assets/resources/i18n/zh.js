@@ -10,15 +10,12 @@ if (!window.i18n.languages) {
 
 window.i18n.languages['zh'] = {
     // write your key value pairs here
-    "CommonString":{
+    "GameTxt":{
         "gold": 	"金币",
         "diamond": 	"钻石"
     },
 
-    "GameErrorString":{
-
+    "ErrCode":{
+    		
     },
-    "GameOtherString":{
-    },
-
 };

@@ -2,9 +2,6 @@
 * @ 通用方法类
 * */
 
-var i18n = require('LanguageData');
-i18n.init('zh');
-
 // 货币类型
 var CurrencyType =
 {
