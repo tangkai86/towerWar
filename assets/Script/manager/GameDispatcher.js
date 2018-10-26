@@ -7,7 +7,7 @@ GameDispatcher 游戏调度器 单例
 
 var GameDispatcher = cc.Class({
 	properties: {
-        _className: "GameDispatcher";
+        _className: "GameDispatcher"
     },
 
     ctor: function () {

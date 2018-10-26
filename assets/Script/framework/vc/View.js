@@ -3,42 +3,45 @@
 View 所有场景基类
 
 */
+var ET = require("Event");
 var View = cc.Class({
     extends: cc.Component,
 
     properties: {
-        _className: "View";
-        _fromName: null;
+        _className: "View",
+        _fromName: null
     },
 
     ctor:function () {
         
     },
 
-    onLoad: function () {
-        
-    },
-
+    //Override
     start: function () {
     
     },
 
+    //Override
     update: function (dt) {
 
     },
 
+    //Override
     lateUpdate: function (dt) {
         
     },
 
+    //Override
     onEnable: function () {
 
     },
 
+    //Override
     onDisable: function () {
         // body...
     },
 
+    //Override
     onDestroy: function () {
         
     },
@@ -61,9 +64,11 @@ var View = cc.Class({
 
     getFromName: function() {
         return this._fromName;
-    }
+    },
 
-    remove: function(argument) {
+    destroyNode: function() {
         this.node.destroy();
     }
 });
+
+module.exports = View;

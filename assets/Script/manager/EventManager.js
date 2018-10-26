@@ -22,7 +22,7 @@ target.hasEvent(EventName)
 */
 var EventManager = cc.Class({
 	properties: {
-        _className: "EventManager";
+        _className: "EventManager"
     },
 
 	ctor: function() {

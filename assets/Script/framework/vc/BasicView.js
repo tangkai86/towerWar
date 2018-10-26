@@ -1,11 +1,14 @@
 /*
 BasicView 所有弹窗基类
 */
+var ET = require("Event");
 var BasicView = cc.Class({
 	extends: cc.Component,
 
 	properties: {
-        _className: "BasicView";
+        _className: "BasicView",
+        _popViewId: -1,
+		_data: null
     },
 
 	__ctor__: function(args) {
@@ -17,287 +20,181 @@ var BasicView = cc.Class({
 
 	//初始化数据
 	initData: function(args) {
-		this._x = args.x;
-		this._y = args.y;
-		this._uid = args.uid;
-		this._data = null;
 		this._showActionType = args.showActionType?args.showActionType:0;
-		this._dataLoadded = args.loaddedData?args.loaddedData:false;
-		this._normalPosition = new cc.Vec2(0, 0);
-		this._hasBackground = false;
-		this._enterFinish = false;
-		this._showCb = null;
-		this._actionPop = null;
+		this._alwaysShow = args.alwaysShow?args.alwaysShow:false;
+		this._showCb = args.cb;
 	},
 
 	//初始化UI
 	initUI: function(args) {
-		this.setActive(false);
-	},
-
-	initClick: function() {},
-	//自定义进入动画开始
-	//cb:传入的动画完成时的回调
-	onCustomEnterStart: function(cb) {
-		var self = this;
-		self._startAction = true;
-		self.startEnterAction(function(){
-			self._startAction = false;
-			self.onCustomEnterFinish(cb);
-		});
-	},
-
-	startEnterAction: function(cb) {
-		var self = this;
-		if (self._showActionType === 2)
-			self._popScaleAction({x:self._x, y:self._y, cb:cb});
-		else
-			self._popAction({cb:cb});
-
-		self.createBgLayerColor(true);
-	},
-
-	onCustomEnterFinish: function(cb) {
-		var self = this;
-
-		self._enterFinish = true;
-		//进入完成时恢复大小、透明度
-		self.setNormalStatus();
-
-		if (self._dataLoadded)
-			self.setView(self._data);
-
-		if (cb) cb();
-	},
-
-	setNormalStatus: function() {
-		this.node.setOpacity(0);
-		this.node.setScale(1.0);
-	},
-
-	onCustomExitStart: function(cb) {
-		var self = this;
-
-		self._startAction = true;
-		self.startExitAction(function(){
-			self._startAction = false;
-			self.onCustomExitFinish(cb);
-		})
-	},
-	onCustomExitFinish: function(cb) {
-		var self = this;
-
-		if (cb) cb();
-		var uid = self._uid;
-        window.gm.pm.remove(uid);
-	},
-
-	startExitAction: function(cb) {
-		if (this._showActionType === 1)
-			this._backAction({cb:cb});
-		else
-			if (cb) cb();
-	},
-
-	setView: function(data) {
-		if (!this._dataLoadded) return false;
-		return true;
+		
 	},
 
 	reqData: function() {},
 
 	setData: function(data) {
-		var self = this;
-
-		self._data = data;
-		self._dataLoadded = true;
-		if (self._enterFinish)
-			self.setView(data);
+		this._data = data;
 	},
 
-	show: function(cb) {
-		this._showCb = cb;
-		//ignore: 背景检查
-		self.onCustomEnterStart(cb);
+	show: function() {
+		self.enterAction();
 	},
 
-	//不带动画展示界面
-	showWithoutAction: function(cb) {
-		this._showCb = cb;
-		//ignore: 背景检查
-		this.createBgLayerColor();
-		this.setActive(true);
-		this.onCustomEnterFinish(cb);
-	},
-
-	display: function() {
-		this.setNormalStatus();
-		this.setPosition(self._normalPosition);
-		this.setActive(true);
-	},
-
-	close: function(cb) {
-		this.destroyBgColorLayer();
-		this.onCustomExitStart(cb);
-	},
-
-	//不带动画的关闭此界面
-	closeWithoutAction: function(cb) {
-		this.onCustomExitFinish(cb);
+	close: function() {
+		this.exitAction();
 	},
 
 	hide: function() {
-		this.destroyBgColorLayer();
-		this.startExitAction(function() {
-			this.setActive(false);
-		});
-	},
-
-	hideWithoutAction: function() {
-		this.setNormalStatus();
-		if (this._actionPop) {
-			this.stopAction(self._actionPop);
-			this._actionPop = null;
-			this._startAction = false;
-			this.onCustomEnterFinish(self._showCb);
-		}
-		this.setVisible(false);
-	},
-
-	existBackground: function() {
-		return this._hasBackground;
+		this.setActive(false);
 	},
 
 	getName: function() {
 		return this._className;
 	},
 
-	createBgLayerColor: function(isAction){
-		var self = this;
-
-		if (this.bgColorLayer){
-			this.bgColorLayer.destroy();
-		}
-
-		self.bgColorLayer = new cc.LayerColor();
-		self.addChild(self.bgColorLayer, -1);
-		self.bgColorLayer.setColor(cc.color(0,0,0));
-
-		if (isAction){
-			self.bgColorLayer.setOpacity(0);
-			self.bgColorLayer.runAction(new cc.Sequence(
-				new cc.DelayTime(0.2),
-				new cc.FadeTo(0.1,120)
-			));
-		}else {
-			self.bgColorLayer.setOpacity(120);
-		}
+	setPopViewId: function(popViewId) {
+		this._popViewId = popViewId;
 	},
 
-	destroyBgColorLayer: function(){
-		var self = this;
-
-		if (self.bgColorLayer){
-			self.bgColorLayer.removeFromParent();
-			self.bgColorLayer = null;
-		}
+	getPopViewId: function() {
+		return this._popViewId;
 	},
 
-	_popAction: function(args) {
-		var self = this;
-
-		args = args ? args : {};
-		var time = args.time ? args.time : 0.2;
-		var cb = args.cb;
-
-		self._normal_position = cc.p(self.getPosition());
-
-		self.setAnchorPoint(cc.p(0.5, 0.5));
-		self.setScale(0.6);
-
-		var action = self.runAction(new cc.Sequence(
-			new cc.Show(),
-			new cc.EaseSineOut(new cc.ScaleTo(time, 1.1)),
-			new cc.EaseSineOut(new cc.ScaleTo(time, 1.0)),
-			new cc.DelayTime(0.01),
-			new cc.CallFunc(function(sender){
-				self._action_pop = null;
-				if (cb) cb(sender);
-			})
-		));
-		self._action_pop = action;
-	},
-
-	_popScaleAction: function(args) {
-		var self = this;
-
-		args = args ? args : {};
-		var x = args.x ? args.x : 0;
-		var y = args.y ? args.y : 0;
-		var cb = args.cb;
-		var time = args.time === undefined ? 0.2 : args.time;
-
-		self._normal_position = Display.center;
-
-		self.setAnchorPoint(cc.p(0.5, 0.5));
-		self.ignoreAnchorPointForPosition(false);
-		self.setScale(0);
-		self.setPosition(cc.p(x, y));
-
-		var action = self.runAction(new cc.Sequence(
-			new cc.Show(),
-			new cc.EaseSineOut(new cc.Spawn(
-                new cc.MoveTo(time, Display.center),
-				new cc.ScaleTo(time, 1.0),
-				new cc.FadeIn(time)
-			)),
-			new cc.EaseSineOut(new cc.ScaleTo(0.1, 1.05)),
-			new cc.EaseSineOut(new cc.ScaleTo(0.05, 1.0)),
-			new cc.DelayTime(0.01),
-			new cc.CallFunc(function(sender){
-				self._action_pop = null;
-				if (cb) cb(sender);
-			})
-		));
-		self._action_pop = action;
-	},
-
-	_backAction: function(args) {
-		var self = this;
-
-		args = args ? args : {};
-		var cb = args.cb || null;
-		var time = args.time === undefined ? 0.1 : args.time;
-		var scale = 0.8;
-		var opacity = 130;
-
-		self.runAction(new cc.Sequence(
-			new cc.Spawn(
-				new cc.ScaleTo(time, scale),
-				new cc.FadeTo(time, opacity)
-			),
-			new cc.CallFunc(function(sender) {
-				self.setVisible(false);
-				if (cb) cb(sender);
-			})
-		));
-	},
-
-	onEnter:function () {
-        var self = this;
-        self._super();
-    },
-
-	onExit:function () {
-        var self = this;
-        self._super();
-    },
-
-	cleanup:function () {
-        var self = this;
+	//Override
+	onLoad: function () {
         
-        self._super();
+    },
 
-        qf.platform.garbageCollect();
-    }
+    //Override
+    start: function () {
+    
+    },
+
+    //Override
+    update: function (dt) {
+
+    },
+
+    //Override
+    lateUpdate: function (dt) {
+        
+    },
+
+    //Override
+    onEnable: function () {
+
+    },
+
+    //Override
+    onDisable: function () {
+        // body...
+    },
+
+    //Override
+    onDestroy: function () {
+        
+    },
+
+    setActive: function(active) {
+        this.node.active = active;
+    },
+
+    getActive: function(){
+        return this.node.active
+    },
+
+    setFromName: function(fromName) {
+        this._fromName = fromName;
+    },
+
+    getFromName: function() {
+        return this._fromName;
+    },
+
+    //是否一直显示
+    isAlwaysShow: function() {
+    	return this._alwaysShow;
+    },
+
+    //弹窗管理器移除弹窗
+    remove: function() {
+        window.gm.pm.removeView(this._popViewId);
+    },
+
+    //删除节点
+    destroyNode: function() {
+    	this.node.destroy();
+    },
+
+    //打开弹窗动画
+    enterAction: function() {
+		//弹窗结束执行
+		var enterFunc = function() {
+			if (self._showCb) {
+				self._showCb();
+				self._showCb = null;
+			}
+		}
+
+		//背景
+		if(!this.bgColorLayer){
+			this.bgColorLayer = new cc.Node('Sprite');
+    		this.bgColorLayer.addComponent(cc.Sprite);
+    		this.bgColorLayer.parent = this.node;
+		}
+		this.bgColorLayer.color = new cc.Color(0, 0, 0);
+
+		//无动画弹窗
+		if(this._showActionType == 1){
+			this.bgColorLayer.opacity = 150;
+			enterFunc()
+		}else{
+		//动画弹窗
+			var time = 0.2;
+			this.node.setScale(0.6);
+			this.node.runAction(cc.sequence(
+				cc.show(),
+				cc.easeSineOut(cc.scaleTo(time, 1.1)),
+				cc.easeSineOut(cc.scaleTo(time, 1.0)),
+				cc.delayTime(0.01),
+				cc.callFunc(function(sender){
+					enterFunc()
+				})
+			));
+
+			this.bgColorLayer.opacity = 0;
+			this.bgColorLayer.runAction(cc.sequence(
+				cc.delayTime(time),
+				cc.fadeTo(0.1,150)
+			));
+		}
+	},
+
+	//关闭弹窗动画
+	exitAction: function() {
+		//背景
+		if(this.bgColorLayer){
+            this.bgColorLayer.destroy();
+            this.bgColorLayer = null
+        }
+
+        //无动画退出
+		if (this._showActionType === 1)
+			this.remove()
+		else{
+		//有动画退出
+			var time = 0.1;
+			this.node.runAction(cc.sequence(
+				cc.spawn(
+					cc.scaleTo(time, 0.8),
+					cc.fadeTo(time, 130)
+				),
+				cc.callFunc(function(sender) {
+					this.remove();
+				})
+			));
+		}
+	}
 });
+
+module.exports = BasicView;

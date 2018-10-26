@@ -3,10 +3,11 @@
 Controller 所有界面控制基类
 
 */
+var ET = require("Event");
 var Controller = cc.Class({
     properties: {
-        _className: "Controller";
-        view: null;
+        _className: "Controller",
+        view: null
     },
 
     ctor: function () {
@@ -38,7 +39,7 @@ var Controller = cc.Class({
 
     remove: function () {
         if (this.view) {
-            this.view.remove();
+            this.view.destroyNode();
             this.view = null;
             this.clearModuleEvent();
             this.removeModuleEvent();
@@ -93,3 +94,5 @@ var Controller = cc.Class({
         }
     }
 });
+
+module.exports = Controller;
