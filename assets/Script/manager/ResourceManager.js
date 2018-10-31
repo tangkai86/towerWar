@@ -1,4 +1,5 @@
 
+var GameResClassify = require("GameResClassify");
 var ResourceManager = cc.Class({
 	properties: {
         _className: "ResourceManager",
@@ -6,58 +7,16 @@ var ResourceManager = cc.Class({
 
 	ctor: function() {
 		var self = this;
-
+		self._netResMd5Tab = null;   //网络资源md5文件列表
+		self._loadResMd5Tab = null;  //已下载资源md5文件列表
 		self.is_loadded = {};
 	}
 });
 
 (function() {
 	var proto = ResourceManager.prototype;
-
-	//获取指定模块的资源列表
-	proto.getResList = function(parent, module) {
-		var self = this, ret = [], i;
-
-		if (module === undefined) {
-			module = parent;
-			parent = qf.classify;
-		}
-
-		if (typeof module === "string") {
-			ret = clone(parent[module]);
-
-			typeof ret === "string" && (ret = [ret]);
-		}
-		else if (module instanceof Array) {
-			for (i = 0; i < module.length; i++) {
-				ret.push.apply(ret, self.getResList(parent, module[i]));
-			}
-		}
-		else if (module instanceof Object) {
-			for (i in module) {
-				ret.push.apply(ret, self.getResList(parent[i], module[i]));
-			}
-		}
-
-		return ret;
-	};
-
-	proto.genAlias = function(module) {
-		var self = this, alias = [];
-
-		if (module === "lobby") {
-			alias = ["global"];
-		}
-		else {
-			alias = [module];
-		}
-
-		return alias;
-	};
-
 	proto.parseModule = function(module) {
-		var self = this, modules = [], alias = [], i;
-
+		var self = this, modules = [], alias = [], i = 0;
 		if (typeof module === "string") {
 			modules.push(module);
 		}
@@ -71,95 +30,126 @@ var ResourceManager = cc.Class({
 				modules.push.apply(modules, self.parseModule(module[i]));
 			}
 		}
-
+		
 		for (i = 0; i < modules.length; i++) {
-			alias.push.apply(alias, self.genAlias(modules[i]));
+			alias.push(GameResClassify[modules[i]]);
 		}
 
 		return alias;
 	},
 
-	//预加载资源
-	proto.preload = function(module, complete) {
-		var self = this;
-
-		var alias = self.parseModule(module);
-
-		complete || (complete = function(){});
-
-		var aysnc = cc.loader.load(self.getResList(alias), function(result, count, loaddedCount) {
-			}, function(errors) {
-				if (errors && errors.length > 0) {
-					setTimeout(function() {
-						self.preload(module, complete);
-					}, 0.5);
-				}
-				else {
-					self.setLoadded(alias, true);
-					if (complete) complete();
-				}
-			});
-		aysnc._limit = 1;
-	};
-
 	//加载纹理缓存
-	proto.load = function(module, iterator, complete, is_loadding) {
+	proto.load = function(module, iterator, complete) {
 		var self = this;
-		iterator || (iterator = function(){});
-		complete || (complete = function(){});
-
-		//显示加载百分比
-        var funcPercent = function (percent) {
-            if (!is_loadding) {
-                qf.event.dispatchEvent(ET.EVT_SHOW_GLOBAL_LOADDING, {txt: cc.formatStr(qf.txt.str001, percent)});
+        var alias = self.parseModule(module);
+    	var i = 0;
+        var loadRes = function(resPath) {
+        	cc.log("加载资源路径:"+resPath);
+        	cc.loader.loadResDir(resPath, function(completedCount, totalCount, item) {
+			if(iterator) iterator(completedCount, totalCount, item);
+				
+	        }, function(errors, resource, urls) {
+	        	console.log(resource);
+	            if (errors && errors.length > 0) {
+	                setTimeout(function() {
+	                    self.load(module, iterator, complete);
+	                }, 500);
+	            }
+	            else {
+	            	cc.log("加载资源完成:"+resPath)
+	            	self.setLoadded(resPath, true);
+	            	i++;
+	            	if(i >= alias.length){
+	            		if (complete) complete();
+	            	}else{
+	            		loadRes(alias[i]);
+	            	}
+	            }
+	        });
+        }
+    	loadRes(alias[i]);
+	};
+	
+	//下载微信资源
+    proto.wxDownLoadFile = function (resList, iteratorCb, completeCb) {
+        var self = this;
+        loge("开始下载模块");
+        console.log(resList);
+        var downWxRes = false;
+        var resLength = resList.length;
+        var index = 0;
+        //文件下载成功回调
+        var loadFileSuccess = function (continuCb, netUrl) {
+            index = index + 1;
+            //文件下载进度
+            if(index < resLength){
+                if(iteratorCb) iteratorCb(index, resLength, netUrl);
+                continuCb();
+            }else {
+                //所有资源都下载完成，加载资源到内存
+                cc.loader.load(resList, function(completedCount, totalCount, item) {
+                    //加载进度
+                }, function(errors) {
+                	loge("模块加载完成");
+                	console.log(resList);
+                	///加载完成, 有下载新的文件，写入本地md5文件
+                	if(downWxRes){
+                        self.writeLoadResMd5(GameRes.loadResMd5Path, self._loadResMd5Tab, function () {
+                            if(completeCb) completeCb(errors);
+                        })
+                    }else {
+                        if(completeCb) completeCb(errors);
+                    }
+                });
             }
         };
-        //加载回调
-        var iteratorFunc = function (result, count, loaddedCount) {
-            if(iterator)iterator(result, count, loaddedCount);
-            funcPercent(Math.ceil(loaddedCount/count*100));
+        var wxLoadFile = function () {
+        	var wxResPath = resList[index];
+            var netUrl = Util.getWxResUrl(wxResPath);
+        	//loge("下载资源:"+netUrl+" 微信路径:"+wxResPath);
+        	var startDownLoad = function () {
+                wx.downloadFile({
+                    url: netUrl,  // 这里是远程文件目录
+                    header: {'content-type': 'application/json'},
+                    filePath: wxResPath,
+                    success: function (res){
+                        //console.log('资源下载成功', res);
+                        downWxRes = true;
+                        var relativePath = Util.getWxResRelativePath(wxResPath);
+                        self._loadResMd5Tab[relativePath] = self._netResMd5Tab[relativePath];
+                        loadFileSuccess(function () {
+                            wxLoadFile();
+                        }, netUrl)
+                    },
+                    fail: function (error) {
+                        setTimeout(function(){
+                            wxLoadFile();
+                        }, 500);
+                    }
+                });
+            };
+
+            //本地文件直接加载
+            if(netUrl.substr(0, 4) !== "http"){
+                loadFileSuccess(function () {
+                    wxLoadFile();
+                }, netUrl)
+			}else {
+            //网络文件
+                var relativePath = Util.getWxResRelativePath(wxResPath);
+                if(self._loadResMd5Tab[relativePath] === self._netResMd5Tab[relativePath]){
+                    //本地缓存文件已经存在
+                    loadFileSuccess(function () {
+                        wxLoadFile();
+                    }, netUrl)
+                }else {
+                    //本地缓存文件不存在，开始下载
+                    startDownLoad();
+                }
+			}
         };
-        funcPercent(0);	//显示加载百分比为0
-		var alias = self.parseModule(module);
-		cc.loader.load(self.getResList(alias), function(result, count, loaddedCount) {
-			self.loadIterator(result, count, loaddedCount, iteratorFunc);
-		}, function(errors) {
-			self.loadComplete(errors, module, alias, iteratorFunc, complete);
-		});
-	};
-
-	//下载的迭代器
-	proto.loadIterator = function(result, count, loaddedCount, iterator) {
-		var self = this;
-
-		//下载出错
-		if (!result) {
-
-		}
-		else {
-			if (iterator) iterator(result, count, loaddedCount);
-		}
-	};
-
-	//下载完成的回调
-	proto.loadComplete = function(errors, module, alias, iterator, complete) {
-		var self = this;
-
-		if (!errors || errors.length < 1) {
-			//没有错
-	    	qf.event.dispatchEvent(ET.EVT_REMOVE_GLOBAL_LOADDING);
-
-	    	self.setLoadded(alias, true);
-
-			if (complete) complete();
-		}
-		else {
-			//下载出错，延迟0.5s之后重新下载
-			setTimeout(function() {
-				self.load(module, iterator, complete);
-			}, 0.5);
-		}
-	};
+        wxLoadFile(); //开启下载
+    };
 
 	proto.setLoadded = function(alias, loadded) {
 		var self = this;
@@ -177,33 +167,148 @@ var ResourceManager = cc.Class({
 	//获取某个模块是否加载完成
 	proto.isLoadded = function(module) {
 		var self = this;
-
-		return self.is_loadded[module] || false;
+		return self.is_loadded[GameResClassify[module]] || false;
 	};
 
-    /**
-	 * 释放模块资源
-     * @param module_name  模块资源
-     * @param ignoreRes 该模块中不释放的资源列表
-     */
-	proto.releaseRes = function (module_name, ignoreRes) {
+	//读取网络md5文件并对比已下载资源loadResMd5.txt文件
+	proto.checkLoadResMd5 = function (completeCb) {
 		var self = this;
-		if(self.isLoadded(module_name)){
-            ignoreRes = ignoreRes || [];
-            var alias = self.parseModule(module_name);
-            var list = self.getResList(alias);
-            while(list.length > 0){
-                var res = list.pop();
-                if(ignoreRes.indexOf(res) === -1){
-                    // logd(res, "资源释放中");
-                    cc.spriteFrameCache.removeSpriteFramesFromFile(res);
-                    cc.textureCache.removeTextureForKey(res);
-                    cc.loader.release(res);
+		if(!window.wx){
+            completeCb();
+            return;
+        }
+        cc.loader.loadTxt(GameRes.netResMd5Path, function (err, netResMd5Txt) {
+            if (err)
+                return completeCb(err);
+            //读取网络资源md5文件
+            self._netResMd5Tab = Util.getResMd5List(netResMd5Txt);
+            loge("解析好的md5列表为:");
+            console.log(self._netResMd5Tab);
+
+            //读取已下载资源的md5文件
+            cc.loader.loadTxt(GameRes.loadResMd5Path, function (err, netResMd5Txt) {
+                self._loadResMd5Tab = {};
+                //读取已下载资源md5错误,设置本地md5文件为空字符串
+                if(!err){
+                    self._loadResMd5Tab = Util.getResMd5List(netResMd5Txt);
                 }
+                loge("解析好的本地md5列表为:");
+                console.log(self._loadResMd5Tab);
+                //删除多余的本地文件
+                self.deleteLocalFiles(self._netResMd5Tab, self._loadResMd5Tab, function () {
+                    loge("删除多余的本地文件完成");
+                    //更新本地md5文件
+                    self.writeLoadResMd5(GameRes.loadResMd5Path, self._loadResMd5Tab, function () {
+                        loge("更新存储本地md5文件完成");
+                        //创建网络资源文件的本地资源目录
+                        self.createLocalDirs(self._netResMd5Tab, function () {
+                            loge("创建本地资源目录完成");
+                            completeCb();
+                        });
+                    });
+                });
+            })
+        });
+    };
+	
+	//删除多余的本地文件
+    proto.deleteLocalFiles = function (netResMd5Tab, loadResMd5Tab, completeCb) {
+        var self = this;
+        //统计已下载的本地文件数量
+        var fileCount = 0;
+        for(var i in loadResMd5Tab){
+            fileCount = fileCount + 1;
+        }
+
+        //已下载的本地文件数量为0，则直接完成
+        if(fileCount <= 0){
+            completeCb();
+            return;
+        }
+
+        //检测并删除本地文件回调
+        var checkFileCb = function () {
+            fileCount = fileCount - 1;
+            if(fileCount <= 0){
+                completeCb();
             }
-            self.setLoadded(module_name, false);
-		}
+        };
+
+        //删除与网络文件不匹配的本地文件
+        for(var i in loadResMd5Tab){
+            var resMd5 = loadResMd5Tab[i];
+            if(!netResMd5Tab[i] || resMd5 !== netResMd5Tab[i]){
+                (function (index) {
+                    var wxRes = qf.platform.getLocalResPath()+"/"+index;
+                    qf.platform.removeFile(wxRes, function (res) {
+                        delete loadResMd5Tab[index];
+                        checkFileCb();
+                    })
+                })(i);
+            }else {
+                checkFileCb();
+            }
+        }
+    };
+	
+	//创建本地资源目录
+    proto.createLocalDirs = function (resPaths, completeCb) {
+        var self = this;
+        //创建资源目录
+        var resDirTab = {};
+        for(var i in resPaths){
+            var resDir = /(.*)\//.exec(i)[0];
+            if(!resDirTab[resDir]){
+                resDirTab[resDir] = 1;
+            }
+        }
+        loge("目前的资源目录是:");
+        console.log(resDirTab);
+        var dirLength = 0;
+        for(var i in resDirTab){
+            dirLength = dirLength + 1;
+        }
+
+        //要创建的资源目录数等于0，则直接完成
+        if(dirLength <= 0){
+            completeCb();
+            return;
+        }
+
+        //创建目录回调
+        var makeDirCb = function () {
+            dirLength = dirLength - 1;
+            if(dirLength <= 0){
+                completeCb();
+            }
+        };
+
+        //创建目录
+        for(var j in resDirTab){
+            (function (index) {
+                qf.platform.makeDir(j, function () {
+                    makeDirCb();
+                })
+            })(j);
+        }
+    };
+
+	//存储已下载资源的md5列表
+    proto.writeLoadResMd5 = function (filePath, fileObj, completeCb) {
+        var self = this;
+        var writeMd5String = "";
+        for(var j in fileObj){
+            writeMd5String = writeMd5String + fileObj[j]+"|"+j+"\n";
+        }
+        qf.platform.writeFile(filePath, writeMd5String, function (res) {
+            if(res){
+                loge("存储md5文件失败");
+                console.log(res);
+            }
+            completeCb();
+        } )
     }
+
 })();
 
 module.exports = ResourceManager;

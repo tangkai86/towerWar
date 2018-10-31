@@ -3,9 +3,15 @@
 	2018/1/29
 	Zero
 =======================================*/
+var ET = require("Event");
+var View = require("View");
 var MainView = cc.Class({
+    extends: View,
     properties: {
-        _className: "MainView",
+        _className: {
+            default: "MainView",
+            override: true
+        },
     },
     ctor: function () {
         var self = this;
@@ -19,6 +25,23 @@ var MainView = cc.Class({
     //初始化Ui
     initUi: function () {
         var self = this;
+    },
+
+    clickEvent: function(event, customEventData) {
+        var node = event.target;
+        console.log(event)
+        cc.log("按钮点击事件:"+customEventData);
+        switch(customEventData){
+            case "activity": //打开活动
+                gm.event.dispatchEvent(ET.EVT_OPEN_VIEW_ACTIVITY);
+                break;
+            case "shop":    //打开商城
+                gm.event.dispatchEvent(ET.EVT_OPEN_VIEW_SHOP);
+                break;
+            case "rule":    //打开规则
+                this.setActive(false);
+                break;
+        }
     }
 });
 

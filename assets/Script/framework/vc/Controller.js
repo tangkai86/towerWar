@@ -3,7 +3,6 @@
 Controller 所有界面控制基类
 
 */
-var ET = require("Event");
 var Controller = cc.Class({
     properties: {
         _className: "Controller",
@@ -47,7 +46,7 @@ var Controller = cc.Class({
     },
 
     load: function(name, iterator, complete) {
-        window.rm.load(name, iterator, complete);
+        gm.rm.load(name, iterator, complete);
     },
 
     //#args object: 
@@ -56,8 +55,9 @@ var Controller = cc.Class({
         var self = this;
         args = args || {};
         var name = args.name || "";
-        if (name.length > 0 && !window.rm.isLoadded(name)) {
-                self.load(name, null, function() {
+        cc.log("加载资源:"+name);
+        if (name.length > 0 && !gm.rm.isLoadded(name)) {
+            self.load(name, null, function() {
                 self.show(args);
             });
             return;
@@ -81,7 +81,7 @@ var Controller = cc.Class({
     },
 
     addModuleEvent: function(eventName, cb, unique) {
-        var index = window.gm.event.addEvent(eventName, cb, unique);
+        var index = gm.event.addEvent(eventName, cb, unique);
         this._moduleEvent.push(index);
     },
 
@@ -89,7 +89,7 @@ var Controller = cc.Class({
         for (var i = 0; i < this._moduleEvent.length; i++) {
             var index = this._moduleEvent[i];
             if (index) {
-                window.gm.event.removeEvent(null, index);
+                gm.event.removeEvent(null, index);
             }
         }
     }

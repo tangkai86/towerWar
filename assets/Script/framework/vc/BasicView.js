@@ -118,7 +118,7 @@ var BasicView = cc.Class({
 
     //弹窗管理器移除弹窗
     remove: function() {
-        window.gm.pm.removeView(this._popViewId);
+        gm.pm.removeView(this._popViewId);
     },
 
     //删除节点

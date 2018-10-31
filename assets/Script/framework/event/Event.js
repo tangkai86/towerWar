@@ -16,4 +16,8 @@ ET.NET_CONNECT_RSP = getUID();
 ET.NET_LOGIN_REQ = getUID();
 ET.NET_LOGIN_RSP = getUID();
 
+ET.EVT_OPEN_SCENCE_MAIN = getUID();	  //打开主界面
+ET.EVT_OPEN_VIEW_ACTIVITY = getUID(); //打开活动界面
+ET.EVT_OPEN_VIEW_SHOP = getUID(); 	  //打开商城界面
+
 module.exports = ET;

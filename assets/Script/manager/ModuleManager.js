@@ -1,12 +1,13 @@
 
 
+var MainController = require("MainController")
 var ModuleManager = cc.Class({
     properties: {
         _className: "ModuleManager",
     },
 
     ctor: function() {
-        var self = this;
+        this.init();
     },
 
     init: function(args) {
@@ -14,14 +15,15 @@ var ModuleManager = cc.Class({
 
         self._modules = {};
 
-        var gview = new GlobalController();
-        self._modules.global = gview;
+        // var gview = new GlobalController();
+        // self._modules.global = gview;
         
         var main = new MainController();
         self._modules.main = main;
+        cc.log("模块管理器初始化");
 
-        var fightGame = new FightGameController();
-        self._modules.fightGame = fightGame;
+        // var fightGame = new FightGameController();
+        // self._modules.fightGame = fightGame;
 	},
 
     clean: function (args) {

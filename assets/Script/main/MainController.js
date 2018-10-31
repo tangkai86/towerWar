@@ -3,10 +3,14 @@
 	2018/1/29
 	Zero
 ================================*/
-
+var Controller = require("Controller");
 var MainController = cc.Class({
+    extends: Controller,
     properties: {
-        _className: "MainController",
+        _className: {
+            default: "MainController",
+            override: true
+        },
     },
 
     ctor: function() {
@@ -16,25 +20,38 @@ var MainController = cc.Class({
     //注册全局监听事件
     initGlobalEvent: function () {
         var self = this;
+        gm.event.addEvent(ET.EVT_OPEN_SCENCE_MAIN, this.openView.bind(this))
     },
 
     //注册模块监听事件
     initModuleEvent: function () {
-        var self = this;
-
+        this.addModuleEvent(ET.EVT_OPEN_VIEW_ACTIVITY, this.openActivity.bind(this))
     },
 
     initView: function() {
-        var self = this;
-        var view =  new MainView();
-        SceneLayer.addChild(view);
-        return view;
+        // 加载 Prefab
+        cc.log("加载主界面");
+        var prefab = cc.loader.getRes(GameRes.prefabMainView, cc.Prefab);
+        var viewNode = cc.instantiate(prefab);
+        viewNode.parent = gm.canvas;
+        viewNode.active = true;
+        return viewNode.getComponent("MainView");
+
+        // var prefab = cc.loader.getRes(GameRes.prefabMainView);
+        // console.log(prefab);
+        // var viewNode = cc.instantiate(prefab);
+        // viewNode.parent = gm.canvas;
+        // return viewNode.getComponent("MainView");
     },
 
-    //销毁界面
-    remove: function() {
-        var self = this;
-        self._super();
+    openView: function(args) {
+        cc.log("打开主界面");
+        console.log(args);
+        this.show({name:"main"});
+    },
+
+    openActivity: function() {
+        cc.log("打开活动界面");
     }
 });
 
