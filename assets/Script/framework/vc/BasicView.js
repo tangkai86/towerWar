@@ -1,32 +1,38 @@
 /*
 BasicView 所有弹窗基类
 */
-var ET = require("Event");
 var BasicView = cc.Class({
 	extends: cc.Component,
-
 	properties: {
         _className: "BasicView",
         _popViewId: -1,
 		_data: null
     },
 
-	__ctor__: function(args) {
-		this._super();
-		args = args ? args : {};
+	ctor: function(){
+
+	},
+
+    //Override
+    onLoad: function(){
+        this.node.setContentSize(cc.winSize);
+    },
+
+	//初始化界面
+	initView: function(args){
 		this.initData(args);
-		this.initUI(args);
+		this.initUi(args);
 	},
 
 	//初始化数据
 	initData: function(args) {
-		this._showActionType = args.showActionType?args.showActionType:0;
-		this._alwaysShow = args.alwaysShow?args.alwaysShow:false;
-		this._showCb = args.cb;
+		this._showActionType = args.showActionType?args.showActionType:0;  //显示动画  0:缩放动画 1:无动画
+		this._alwaysShow = args.alwaysShow?args.alwaysShow:false;	//是否一致显示
+		this._showCb = args.cb;	//显示回调, 弹窗动画播放完毕执行
 	},
 
 	//初始化UI
-	initUI: function(args) {
+	initUi: function(args) {
 		
 	},
 
@@ -37,7 +43,7 @@ var BasicView = cc.Class({
 	},
 
 	show: function() {
-		self.enterAction();
+		this.enterAction();
 	},
 
 	close: function() {
@@ -99,7 +105,7 @@ var BasicView = cc.Class({
         this.node.active = active;
     },
 
-    getActive: function(){
+    isActive: function(){
         return this.node.active
     },
 
@@ -128,19 +134,24 @@ var BasicView = cc.Class({
 
     //打开弹窗动画
     enterAction: function() {
+		this.setActive(true);
 		//弹窗结束执行
 		var enterFunc = function() {
 			if (self._showCb) {
 				self._showCb();
 				self._showCb = null;
 			}
-		}
+		};
 
 		//背景
 		if(!this.bgColorLayer){
-			this.bgColorLayer = new cc.Node('Sprite');
-    		this.bgColorLayer.addComponent(cc.Sprite);
-    		this.bgColorLayer.parent = this.node;
+			this.bgColorLayer = new cc.Node();
+    		var spr = this.bgColorLayer.addComponent(cc.Sprite);
+            spr.type = cc.Sprite.Type.SLICED;
+            spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalPopBg_1, cc.SpriteFrame);
+			this.bgColorLayer.parent = this.node;
+			this.bgColorLayer.zIndex = -1;
+            this.bgColorLayer.setContentSize(cc.winSize);
 		}
 		this.bgColorLayer.color = new cc.Color(0, 0, 0);
 
@@ -154,8 +165,8 @@ var BasicView = cc.Class({
 			this.node.setScale(0.6);
 			this.node.runAction(cc.sequence(
 				cc.show(),
-				cc.easeSineOut(cc.scaleTo(time, 1.1)),
-				cc.easeSineOut(cc.scaleTo(time, 1.0)),
+                cc.scaleTo(time, 1.1).easing(cc.easeSineOut()),
+                cc.scaleTo(time, 1.0).easing(cc.easeSineOut()),
 				cc.delayTime(0.01),
 				cc.callFunc(function(sender){
 					enterFunc()
@@ -165,7 +176,7 @@ var BasicView = cc.Class({
 			this.bgColorLayer.opacity = 0;
 			this.bgColorLayer.runAction(cc.sequence(
 				cc.delayTime(time),
-				cc.fadeTo(0.1,150)
+				cc.fadeTo(0.2,150)
 			));
 		}
 	},
@@ -180,7 +191,7 @@ var BasicView = cc.Class({
 
         //无动画退出
 		if (this._showActionType === 1)
-			this.remove()
+			this.remove();
 		else{
 		//有动画退出
 			var time = 0.1;

@@ -31,23 +31,17 @@ var MainController = cc.Class({
     initView: function() {
         // 加载 Prefab
         cc.log("加载主界面");
-        var prefab = cc.loader.getRes(GameRes.prefabMainView, cc.Prefab);
+        var prefab = cc.loader.getRes(GameRes.prefabMainScence, cc.Prefab);
         var viewNode = cc.instantiate(prefab);
-        viewNode.parent = gm.canvas;
+        viewNode.parent = SceneLayer;
         viewNode.active = true;
         return viewNode.getComponent("MainView");
-
-        // var prefab = cc.loader.getRes(GameRes.prefabMainView);
-        // console.log(prefab);
-        // var viewNode = cc.instantiate(prefab);
-        // viewNode.parent = gm.canvas;
-        // return viewNode.getComponent("MainView");
     },
 
     openView: function(args) {
         cc.log("打开主界面");
         console.log(args);
-        this.show({name:"main"});
+        this.show({name:"main", fromName: args.fromName});
     },
 
     openActivity: function() {

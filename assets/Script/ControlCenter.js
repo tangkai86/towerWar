@@ -22,7 +22,7 @@ cc.Class({
     },
     ctor: function () {
         i18n.init('zh');
-        var gm = {}
+        var gm = gm ? gm : {};
         window.gm = gm;
         gm.event = {};
         new EventManager().extendMethods(gm.event); //事件管理
@@ -34,7 +34,9 @@ cc.Class({
 
     onLoad () {
         cc.game.removePersistRootNode(this.node);
-        gm.canvas = this.canvas;
+        window.SceneLayer = this.canvas.getChildByName("SceneLayer");
+        window.DialogLayer = this.canvas.getChildByName("DialogLayer");
+        window.GlobalLayer = this.canvas.getChildByName("GlobalLayer");
     },
 
     start () {

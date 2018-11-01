@@ -13,7 +13,12 @@ var View = cc.Class({
     },
 
     ctor:function () {
-        
+
+    },
+
+    //Override
+    onLoad: function(){
+        this.node.setContentSize(cc.winSize);
     },
 
     //Override

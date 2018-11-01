@@ -3,7 +3,6 @@
 	2018/1/29
 	Zero
 =======================================*/
-var ET = require("Event");
 var View = require("View");
 var MainView = cc.Class({
     extends: View,

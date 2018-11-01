@@ -12,7 +12,8 @@ window.i18n.languages['zh'] = {
     // write your key value pairs here
     "GameTxt":{
         "gold": 	"金币",
-        "diamond": 	"钻石"
+        "diamond": 	"钻石",
+        "nick":     "昵称:"
     },
 
     "ErrCode":{

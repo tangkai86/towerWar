@@ -20,9 +20,9 @@ var PopupManager = cc.Class({
     //将弹窗加入到队列
     push: function(popView) {
         this._popViewId = this._popViewId + 1;
-        popView.setPopViewId(this._popViewId)
+        popView.setPopViewId(this._popViewId);
         popView.setActive(false);
-    	this.queue.push(popView);
+    	this._queue.push(popView);
         return this._popViewId;
     },
 
@@ -38,28 +38,28 @@ var PopupManager = cc.Class({
     	}
 
     	var popView = this._queue.shift();
-        this.stack.push(popView);
+        this._stack.push(popView);
     	this.showView(popView);
     },
 	
     //隐藏弹窗界面
     hidePopView: function() {
-    	for (var i = 0; i < self._stack.length; i++) {
-            self.stack[i].setActive(false);
+    	for (var i = 0; i < this._stack.length; i++) {
+            this._stack[i].setActive(false);
         }
     },
 
     //显示弹窗界面
     showPopView: function() {
         //显示顶部弹窗
-        if (self._stack.length > 0) {
-            var popView = self._stack[self._stack.length - 1];
+        if (this._stack.length > 0) {
+            var popView = this._stack[this._stack.length - 1];
             popView.setActive(true);
         }
 
         //显示alwaysShow弹窗
-        for (var i = 0; i < self._stack.length; i++) {
-            var popView = self._stack[i];
+        for (var i = 0; i < this._stack.length; i++) {
+            var popView = this._stack[i];
             if(popView.isAlwaysShow()){
                 popView.setActive(true);
             }
@@ -87,11 +87,11 @@ var PopupManager = cc.Class({
         var removePopView = function(id) {
             for (var i = self._stack.length - 1; i >= 0; i--) {
                 if (id === self._stack[i].getPopViewId()) {
-                    self.stack[i].destroyNode();
-                    self.stack.splice(i, 1);
+                    self._stack[i].destroyNode();
+                    self._stack.splice(i, 1);
                 }
             }
-        }
+        };
 
         //判断参数类型
     	if (popViewId instanceof Array) {
@@ -114,6 +114,7 @@ var PopupManager = cc.Class({
             if (self._stack[i].getPopViewId() === id)
                 return self._stack[i];
         }
+        return null;
     },
 
     removeAllPopView: function() {

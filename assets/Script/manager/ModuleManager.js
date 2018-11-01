@@ -1,6 +1,7 @@
 
 
-var MainController = require("MainController")
+var MainController = require("MainController");
+var ActivityController = require("ActivityController");
 var ModuleManager = cc.Class({
     properties: {
         _className: "ModuleManager",
@@ -20,10 +21,9 @@ var ModuleManager = cc.Class({
         
         var main = new MainController();
         self._modules.main = main;
-        cc.log("模块管理器初始化");
 
-        // var fightGame = new FightGameController();
-        // self._modules.fightGame = fightGame;
+        var activity = new ActivityController();
+        self._modules.activity = activity;
 	},
 
     clean: function (args) {

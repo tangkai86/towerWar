@@ -4,14 +4,18 @@ var GameRes = {};
 var prefix = "";
 
 //资源文件夹路径
-GameRes.pathMainView = prefix + "ui/main";
+GameRes.pathMainScence = prefix + "ui/main";		//主界面
+GameRes.pathActivityView = prefix + "ui/activity";  //活动界面
 
 
 //资源路径
-GameRes.prefabMainView = prefix + "ui/main/MainScence";
-// GameRes.plistMain = prefix + "ui/main/main.json";
-// GameRes.pngMain = prefix + "ui/main/main.png";
-// GameRes.pngMainBg = prefix + "ui/main/main_bg_hall.png";
-// GameRes.pngMainBeauty = prefix + "ui/main/main_img_women.png";
+//公共资源
+GameRes.pngGlobalPopBg_1 = prefix + "ui/global/global_pop_bg";
+
+//主界面
+GameRes.prefabMainScence = prefix + "ui/main/MainScence";
+
+//活动界面
+GameRes.prefabActivityView = prefix + "ui/activity/ActivityView";
 
 module.exports = GameRes;
