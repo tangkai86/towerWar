@@ -7,9 +7,7 @@ GameResClassify.loadding = [
 ];
 
 //全局通用资源——在启动游戏时就应该被加载
-GameResClassify.global = [
-    
-];
+GameResClassify.global = GameRes.pathGlobalRes;
 
 //主界面
 GameResClassify.main = GameRes.pathMainScence;
@@ -18,8 +16,6 @@ GameResClassify.main = GameRes.pathMainScence;
 GameResClassify.activity = GameRes.pathActivityView;
 
 //游戏界面
-GameResClassify.game = [
-
-];
+GameResClassify.game = null;
 
 module.exports = GameResClassify;

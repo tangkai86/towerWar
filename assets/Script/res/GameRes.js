@@ -3,14 +3,15 @@ var GameRes = {};
 
 var prefix = "";
 
-//资源文件夹路径
+//------------资源文件夹路径-------------
+GameRes.pathGlobalRes = prefix + "ui/global";   //公共资源
 GameRes.pathMainScence = prefix + "ui/main";		//主界面
 GameRes.pathActivityView = prefix + "ui/activity";  //活动界面
 
 
-//资源路径
+//------------资源路径-----------
 //公共资源
-GameRes.pngGlobalPopBg_1 = prefix + "ui/global/global_pop_bg";
+GameRes.pngGlobalSprite9_2 = prefix + "ui/global/global_sprite9_2";
 
 //主界面
 GameRes.prefabMainScence = prefix + "ui/main/MainScence";

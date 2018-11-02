@@ -40,9 +40,20 @@ cc.Class({
     },
 
     start () {
-        //打开主界面
-        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_MAIN, {fromName: "lanch"});
+        //打开loading界面
+        this.openLoadingView();
     },
+
+    openLoadingView: function(args) {
+        var self = this;
+        if (!gm.rm.isLoadded("global")) {
+            gm.rm.load("global", null, function () {
+                self.openLoadingView(args);
+            });
+            return;
+        }
+        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_MAIN, {fromName: "lanch"});
+    }
 
     // update (dt) {},
 });

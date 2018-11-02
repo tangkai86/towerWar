@@ -32,7 +32,7 @@ var ActivityView = cc.Class({
         cc.log("按钮点击事件:"+customEventData);
         switch(customEventData){
             case "close": //关闭界面
-                self.close();
+                this.closeView();
                 break;
         }
     }

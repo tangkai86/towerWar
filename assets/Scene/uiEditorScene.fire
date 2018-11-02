@@ -63,7 +63,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 17
+        "__id__": 18
       }
     ],
     "_prefab": null,
@@ -125,14 +125,14 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 14
+        "__id__": 15
       },
       {
-        "__id__": 15
+        "__id__": 16
       }
     ],
     "_prefab": {
-      "__id__": 16
+      "__id__": 17
     },
     "_id": "318M+L1N5OB5nfczCM1KOM",
     "_opacity": 255,
@@ -373,7 +373,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 13
+      "__id__": 14
     },
     "_id": "b01xEwi7BOSp7bnp2g3XTj",
     "_opacity": 255,
@@ -464,7 +464,11 @@
     },
     "duration": 0.1,
     "zoomScale": 1.2,
-    "clickEvents": [],
+    "clickEvents": [
+      {
+        "__id__": 13
+      }
+    ],
     "_N$interactable": true,
     "_N$enableAutoGrayEffect": false,
     "_N$normalColor": {
@@ -502,6 +506,15 @@
     "_N$target": {
       "__id__": 10
     }
+  },
+  {
+    "__type__": "cc.ClickEvent",
+    "target": {
+      "__id__": 3
+    },
+    "component": "ActivityView",
+    "handler": "clickEvent",
+    "customEventData": "close"
   },
   {
     "__type__": "cc.PrefabInfo",

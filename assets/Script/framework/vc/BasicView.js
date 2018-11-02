@@ -46,7 +46,7 @@ var BasicView = cc.Class({
 		this.enterAction();
 	},
 
-	close: function() {
+	closeView: function() {
 		this.exitAction();
 	},
 
@@ -134,6 +134,7 @@ var BasicView = cc.Class({
 
     //打开弹窗动画
     enterAction: function() {
+    	var self = this;
 		this.setActive(true);
 		//弹窗结束执行
 		var enterFunc = function() {
@@ -148,7 +149,7 @@ var BasicView = cc.Class({
 			this.bgColorLayer = new cc.Node();
     		var spr = this.bgColorLayer.addComponent(cc.Sprite);
             spr.type = cc.Sprite.Type.SLICED;
-            spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalPopBg_1, cc.SpriteFrame);
+            spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalSprite9_2, cc.SpriteFrame);
 			this.bgColorLayer.parent = this.node;
 			this.bgColorLayer.zIndex = -1;
             this.bgColorLayer.setContentSize(cc.winSize);
@@ -183,6 +184,7 @@ var BasicView = cc.Class({
 
 	//关闭弹窗动画
 	exitAction: function() {
+		var self = this;
 		//背景
 		if(this.bgColorLayer){
             this.bgColorLayer.destroy();
@@ -201,7 +203,7 @@ var BasicView = cc.Class({
 					cc.fadeTo(time, 130)
 				),
 				cc.callFunc(function(sender) {
-					this.remove();
+                    self.remove();
 				})
 			));
 		}

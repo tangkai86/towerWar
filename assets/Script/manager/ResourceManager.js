@@ -32,7 +32,12 @@ var ResourceManager = cc.Class({
 		}
 		
 		for (i = 0; i < modules.length; i++) {
-			alias.push(GameResClassify[modules[i]]);
+		    var resPath = GameResClassify[modules[i]];
+		    if(resPath){
+                alias.push(resPath);
+            }else {
+                cc.log("未配置资源路径:"+modules[i]);
+            }
 		}
 
 		return alias;
@@ -46,8 +51,8 @@ var ResourceManager = cc.Class({
         var loadRes = function(resPath) {
         	cc.log("加载资源路径:"+resPath);
         	cc.loader.loadResDir(resPath, function(completedCount, totalCount, item) {
-			if(iterator) iterator(completedCount, totalCount, item);
-				
+			    if(iterator) iterator(completedCount, totalCount, item);
+				//cc.log("加载进度:"+completedCount);
 	        }, function(errors, resource, urls) {
 	        	console.log(resource);
 	            if (errors && errors.length > 0) {
@@ -56,7 +61,7 @@ var ResourceManager = cc.Class({
 	                }, 500);
 	            }
 	            else {
-	            	cc.log("加载资源完成:"+resPath)
+	            	cc.log("加载资源完成:"+resPath);
 	            	self.setLoadded(resPath, true);
 	            	i++;
 	            	if(i >= alias.length){
@@ -66,7 +71,7 @@ var ResourceManager = cc.Class({
 	            	}
 	            }
 	        });
-        }
+        };
     	loadRes(alias[i]);
 	};
 	
