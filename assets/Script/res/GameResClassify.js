@@ -7,7 +7,7 @@ GameResClassify.loadding = [
 ];
 
 //全局通用资源——在启动游戏时就应该被加载
-GameResClassify.global = GameRes.pathGlobalRes;
+GameResClassify.global = GameRes.pathGlobalScence;
 
 //主界面
 GameResClassify.main = GameRes.pathMainScence;

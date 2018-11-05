@@ -1,5 +1,7 @@
-
-
+/*
+* 模块管理器, 管理所有场景模块
+* */
+var GlobalController = require("GlobalController");
 var MainController = require("MainController");
 var ActivityController = require("ActivityController");
 var ModuleManager = cc.Class({
@@ -16,8 +18,8 @@ var ModuleManager = cc.Class({
 
         self._modules = {};
 
-        // var gview = new GlobalController();
-        // self._modules.global = gview;
+        var global = new GlobalController();
+        self._modules.global = global;
         
         var main = new MainController();
         self._modules.main = main;

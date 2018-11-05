@@ -158,7 +158,7 @@ var BasicView = cc.Class({
 
 		//无动画弹窗
 		if(this._showActionType == 1){
-			this.bgColorLayer.opacity = 150;
+			this.bgColorLayer.opacity = 120;
 			enterFunc()
 		}else{
 		//动画弹窗
@@ -177,7 +177,7 @@ var BasicView = cc.Class({
 			this.bgColorLayer.opacity = 0;
 			this.bgColorLayer.runAction(cc.sequence(
 				cc.delayTime(time),
-				cc.fadeTo(0.2,150)
+				cc.fadeTo(0.2,120)
 			));
 		}
 	},

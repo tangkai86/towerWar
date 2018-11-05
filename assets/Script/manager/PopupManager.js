@@ -31,7 +31,7 @@ var PopupManager = cc.Class({
     	if (this._queue.length <= 0 ) return;
 
     	if (this._stack.length > 0) {
-    		var popView = this.stack[this._stack.length - 1];
+    		var popView = this._stack[this._stack.length - 1];
             if(!popView.isAlwaysShow()){
                 popView.setActive(false)
             }
