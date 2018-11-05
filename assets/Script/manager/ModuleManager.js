@@ -2,6 +2,7 @@
 * 模块管理器, 管理所有场景模块
 * */
 var GlobalController = require("GlobalController");
+var LoadingController = require("LoadingController");
 var MainController = require("MainController");
 var ActivityController = require("ActivityController");
 var ModuleManager = cc.Class({
@@ -18,12 +19,19 @@ var ModuleManager = cc.Class({
 
         self._modules = {};
 
+        //全局视图
         var global = new GlobalController();
         self._modules.global = global;
+
+        //进游戏加载界面
+        var loading = new LoadingController();
+        self._modules.loading = loading;
         
+        //主界面大厅
         var main = new MainController();
         self._modules.main = main;
 
+        //活动界面
         var activity = new ActivityController();
         self._modules.activity = activity;
 	},
