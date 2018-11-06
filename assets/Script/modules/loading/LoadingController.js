@@ -19,7 +19,8 @@ var LoadingController = cc.Class({
 
     //注册全局监听事件
     initGlobalEvent: function () {
-        
+        gm.event.addEvent(ET.EVT_OPEN_SCENCE_LOADING, this.openView.bind(this));
+        gm.event.addEvent(ET.EVT_CLOSE_SCENCE_LOADING, this.remove.bind(this));
     },
 
     //注册模块监听事件
@@ -28,19 +29,14 @@ var LoadingController = cc.Class({
     },
 
     initView: function() {
-        // 加载 Prefab
-        cc.log("加载loading界面");
-        var prefab = cc.loader.getRes(GameRes.prefabMainScence, cc.Prefab);
+        var prefab = cc.loader.getRes(GameRes.prefabLoadingScence, cc.Prefab);
         var viewNode = cc.instantiate(prefab);
         viewNode.parent = SceneLayer;
-        viewNode.active = true;
         return viewNode.getComponent("LoadingView");
     },
 
     openView: function(args) {
-        cc.log("打开主界面");
-        console.log(args);
-        this.show({name:"main", fromName: args.fromName});
+        this.show({name:"loading", fromName: args.fromName});
     }
 });
 

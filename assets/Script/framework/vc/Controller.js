@@ -74,6 +74,10 @@ var Controller = cc.Class({
         else {
             this.view.setActive(true);
         }
+
+        if(args.showCb){
+            args.showCb();
+        }
     },
 
     getView: function() {

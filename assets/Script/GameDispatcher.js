@@ -40,10 +40,8 @@ cc.Class({
     },
 
     start () {
-        //打开global界面
-        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_GLOBAL, {fromName: "lanch"});
         //打开loading界面
-        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_MAIN, {fromName: "lanch"});
+        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_LOADING, {fromName: "lanch"});
         cc.log("打开Loading界面");
     }
 

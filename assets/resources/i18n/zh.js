@@ -14,7 +14,9 @@ window.i18n.languages['zh'] = {
         "gold": 	    "金币",
         "diamond": 	"钻石",
         "nick":        "昵称:",
-        "commonTip":   "温馨提示!同意请点击\"确定\",不同意请点击\"取消\""
+        "commonTip":   "温馨提示!同意请点击\"确定\",不同意请点击\"取消\"",
+        "loading":     "资源加载中...%s%",
+        "changeTxt":    "公共可变文本"
     },
 
     "ErrCode":{

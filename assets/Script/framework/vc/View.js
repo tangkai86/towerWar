@@ -23,7 +23,7 @@ var View = cc.Class({
 
     //Override
     start: function () {
-    
+        this.initUi();
     },
 
     //Override

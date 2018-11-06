@@ -22,12 +22,7 @@ var ResourceManager = cc.Class({
 		}
 		else if (module instanceof Array) {
 			for (i = 0; i < module.length; i++) {
-				modules.push.apply(modules, self.parseModule(module[i]));
-			}
-		}
-		else if (module instanceof Object) {
-			for (i in module) {
-				modules.push.apply(modules, self.parseModule(module[i]));
+                modules.push(module[i]);
 			}
 		}
 		
@@ -172,7 +167,17 @@ var ResourceManager = cc.Class({
 	//获取某个模块是否加载完成
 	proto.isLoadded = function(module) {
 		var self = this;
-		return self.is_loadded[GameResClassify[module]] || false;
+        if (typeof module === "string") {
+            return self.is_loadded[GameResClassify[module]]
+        }
+        else {
+            for (var i = 0; i < module.length; i++) {
+                if(!self.is_loadded[GameResClassify[module[i]]]){
+                    return false;
+                }
+            }
+            return true;
+        }
 	};
 
 	//读取网络md5文件并对比已下载资源loadResMd5.txt文件
