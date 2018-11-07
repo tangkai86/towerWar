@@ -12,9 +12,12 @@ var ModuleManager = require("ModuleManager");
 var PopupManager = require("PopupManager");
 var ResourceManager = require("ResourceManager");
 var EventManager = require("EventManager");
-window.i18n = require('LanguageData');
-window.ET = require("Event");
-window.GameRes = require("GameRes");
+var MusicPlayer = require("MusicPlayer");
+window.i18n = require('LanguageData');      //多国语言
+window.SK = require("StorageKey");          //本地存档key
+window.UtilAction = require("UtilAction"); //公共动作方法
+window.ET = require("Event");                //游戏内的事件
+window.GameRes = require("GameRes");        //游戏资源
 cc.Class({
     extends: cc.Component,
     properties: {
@@ -29,7 +32,10 @@ cc.Class({
         gm.mm = new ModuleManager(); //模块
         gm.pm = new PopupManager(); //弹窗
         gm.rm = new ResourceManager(); //资源
-        //gm.mp = new MusicPlayer();
+        gm.mp = new MusicPlayer();   //音频
+
+        //关闭调试
+        //cc.director.setDisplayStats(false);
     },
 
     onLoad () {

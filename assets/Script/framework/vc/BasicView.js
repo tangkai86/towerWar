@@ -86,6 +86,10 @@ var BasicView = cc.Class({
         
     },
 
+    clickEvent: function(event, customEventData) {
+		gm.mp.playEffect(GameRes.audioClickBtn);
+    },
+
     //Override
     onEnable: function () {
 

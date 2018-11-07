@@ -35,6 +35,7 @@ var LoadingView = cc.Class({
 
     //event.target为当前点击对象
     clickEvent: function(event, customEventData) {
+        this._super(event, customEventData);
         switch(customEventData){
             
         }
@@ -47,7 +48,7 @@ var LoadingView = cc.Class({
 
     startLoadding: function() {
         var self = this;
-        var preLoadModule = ["global", "main"];
+        var preLoadModule = ["global", "main", "preloadAudio"];
         //重连时到登陆界面，判断当前资源是否加载过
         if (gm.rm.isLoadded(preLoadModule)){
             self.enterGameHall();

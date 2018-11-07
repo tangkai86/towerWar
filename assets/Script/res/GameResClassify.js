@@ -4,6 +4,9 @@ var GameResClassify = {};
 //全局通用资源——在启动游戏时就应该被加载
 GameResClassify.global = GameRes.pathGlobalScence;
 
+//预加载音效
+GameResClassify.preloadAudio = GameRes.pathPreloadMusic;
+
 //loading界面
 GameResClassify.loading = GameRes.prefabLoadingScence;
 

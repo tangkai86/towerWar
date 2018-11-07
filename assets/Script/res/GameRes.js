@@ -5,9 +5,11 @@ var prefix = "";
 
 //------------资源文件夹路径-------------
 GameRes.pathGlobalScence = prefix + "ui/global";   //公共资源
+GameRes.pathPreloadMusic = prefix + "sound/preload";    //提前预加载音频
 GameRes.pathLoadingScence = prefix + "ui/loading"; //loading界面
 GameRes.pathMainScence = prefix + "ui/main";		//主界面
 GameRes.pathActivityView = prefix + "ui/activity";  //活动界面
+GameRes.pathAllMusic = prefix + "sound";    //所有音频文件
 
 
 //------------资源路径-----------
@@ -23,5 +25,9 @@ GameRes.prefabMainScence = prefix + "ui/main/MainScence";
 
 //活动界面
 GameRes.prefabActivityView = prefix + "ui/activity/ActivityView";
+
+//音频文件
+GameRes.audioBgGame = prefix + GameRes.pathPreloadMusic + "/bg_game"; //背景音乐
+GameRes.audioClickBtn = prefix + GameRes.pathPreloadMusic + "/button_click"; //按钮点击
 
 module.exports = GameRes;

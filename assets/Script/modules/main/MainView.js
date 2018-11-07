@@ -24,11 +24,13 @@ var MainView = cc.Class({
     //初始化Ui
     initUi: function () {
         var self = this;
+        gm.mp.backgroundSineIn(GameRes.audioBgGame, true);
     },
 
     clickEvent: function(event, customEventData) {
+        this._super(event, customEventData);
         var node = event.target;
-        console.log(event)
+        console.log(event);
         cc.log("按钮点击事件:"+customEventData);
         switch(customEventData){
             case "activity": //打开活动

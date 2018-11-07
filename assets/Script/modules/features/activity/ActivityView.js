@@ -27,6 +27,7 @@ var ActivityView = cc.Class({
     },
 
     clickEvent: function(event, customEventData) {
+        this._super(event, customEventData);
         var node = event.target;
         console.log(event);
         cc.log("按钮点击事件:"+customEventData);
