@@ -13,17 +13,16 @@ var MainView = cc.Class({
         },
     },
     ctor: function () {
-        var self = this;
+
     },
 
     //初始化数据
     initData: function () {
-        var self = this;
+
     },
 
     //初始化Ui
     initUi: function () {
-        var self = this;
         gm.mp.backgroundSineIn(GameRes.audioBgGame, true);
     },
 

@@ -1,4 +1,4 @@
-var CocosExtend = require("CocosExtend");
+
 var MusicPlayer = cc.Class({
     properties: {
         _className: "MusicPlayer",
@@ -40,9 +40,7 @@ var MusicPlayer = cc.Class({
 
 			volume = volume - 0.05;
 			volume = volume < 0 ? 0 : volume;
-
 			self.setMusicVolume(volume);
-
 			self.sheduler_sineout = UtilAction.performWithGlobal(function() {
 				delete self.sheduler_sineout;
 				sineout();
@@ -80,7 +78,6 @@ var MusicPlayer = cc.Class({
 
 			volume = volume + 0.01;
 			self.setMusicVolume(volume);
-
 			self.sheduler_sinein = UtilAction.performWithGlobal(function() {
 				delete self.sheduler_sinein;
 				sineIn();
@@ -150,15 +147,15 @@ var MusicPlayer = cc.Class({
 
 	//游戏中调用，暂时静音
 	setEffectMute: function(mute) {
-		var self = this;
-		self.effect_mute = mute;
-		if (self.effect_mute) {
+        this.effect_mute = mute;
+		if (this.effect_mute) {
 			cc.audioEngine.stopAllEffects();
 		}
 	},
 
 	getEffectsEnabled: function() {
-		var self = this;
-		return self.pauseGameEffects;
+		return this.pauseGameEffects;
 	}
 });
+
+module.exports = MusicPlayer;

@@ -19,7 +19,6 @@ var MainController = cc.Class({
 
     //注册全局监听事件
     initGlobalEvent: function () {
-        var self = this;
         gm.event.addEvent(ET.EVT_OPEN_SCENCE_MAIN, this.openView.bind(this))
     },
 

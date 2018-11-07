@@ -68,7 +68,7 @@ var BasicView = cc.Class({
 
 	//Override
 	onLoad: function () {
-        
+        this.touchEventInit();
     },
 
     //Override
@@ -134,6 +134,26 @@ var BasicView = cc.Class({
     //删除节点
     destroyNode: function() {
     	this.node.destroy();
+    },
+
+    touchEventInit: function()
+    {
+        var self = this;
+        this.node.on(cc.Node.EventType.TOUCH_START, function(event){
+            var touchPos = event.touch.getLocation();
+            event.stopPropagation();
+            cc.log("点击开始:"+self._className);
+        }, this);
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, function(event){
+            cc.log("点击移动:"+self._className);
+        }, this);
+        this.node.on(cc.Node.EventType.TOUCH_END, function(event){
+            cc.log("点击结束:"+self._className);
+        }, this);
+        this.node.on(cc.Node.EventType.TOUCH_CANCEL, function(event){
+            cc.log("点击取消:"+self._className);
+        }, this);
+        this.node._touchListener.setSwallowTouches(false);
     },
 
     //打开弹窗动画

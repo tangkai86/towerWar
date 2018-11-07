@@ -3,7 +3,6 @@
 View 所有场景基类
 
 */
-var ET = require("Event");
 var View = cc.Class({
     extends: cc.Component,
 

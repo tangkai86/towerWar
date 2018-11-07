@@ -18,6 +18,7 @@ window.SK = require("StorageKey");          //本地存档key
 window.UtilAction = require("UtilAction"); //公共动作方法
 window.ET = require("Event");                //游戏内的事件
 window.GameRes = require("GameRes");        //游戏资源
+window.gm = {};     //gm游戏管理器
 cc.Class({
     extends: cc.Component,
     properties: {
@@ -25,8 +26,6 @@ cc.Class({
     },
     ctor: function () {
         i18n.init('zh');
-        var gm = gm ? gm : {};
-        window.gm = gm;
         gm.event = {};
         new EventManager().extendMethods(gm.event); //事件管理
         gm.mm = new ModuleManager(); //模块
