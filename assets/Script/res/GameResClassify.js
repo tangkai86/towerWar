@@ -17,6 +17,6 @@ GameResClassify.main = GameRes.pathMainScence;
 GameResClassify.activity = GameRes.pathActivityView;
 
 //游戏界面
-GameResClassify.game = null;
+GameResClassify.game = GameRes.pathGameScence;
 
 module.exports = GameResClassify;

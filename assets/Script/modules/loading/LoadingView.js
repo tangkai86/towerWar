@@ -48,7 +48,7 @@ var LoadingView = cc.Class({
 
     startLoadding: function() {
         var self = this;
-        var preLoadModule = ["global", "main", "preloadAudio"];
+        var preLoadModule = ["global", "main", "game", "preloadAudio"];
         //重连时到登陆界面，判断当前资源是否加载过
         if (gm.rm.isLoadded(preLoadModule)){
             self.enterGameHall();
@@ -82,7 +82,10 @@ var LoadingView = cc.Class({
         //加载global界面
         gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_GLOBAL);
         //加载主界面
-        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_MAIN);
+        //gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_MAIN);
+
+        //加载游戏界面
+        gm.event.dispatchEvent(ET.EVT_OPEN_SCENCE_GAME);
     }
 });
 

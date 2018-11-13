@@ -4,6 +4,7 @@
 var GlobalController = require("GlobalController");
 var LoadingController = require("LoadingController");
 var MainController = require("MainController");
+var GameController = require("GameController");
 var ActivityController = require("ActivityController");
 var ModuleManager = cc.Class({
     properties: {
@@ -30,6 +31,10 @@ var ModuleManager = cc.Class({
         //主界面大厅
         var main = new MainController();
         self._modules.main = main;
+
+        //游戏界面
+        var game = new GameController();
+        self._modules.game = game;
 
         //活动界面
         var activity = new ActivityController();

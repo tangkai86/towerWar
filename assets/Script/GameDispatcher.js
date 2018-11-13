@@ -8,6 +8,7 @@
 //  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
 
+var Cache = require("Cache");
 var ModuleManager = require("ModuleManager");
 var PopupManager = require("PopupManager");
 var ResourceManager = require("ResourceManager");
@@ -26,6 +27,7 @@ cc.Class({
     },
     ctor: function () {
         i18n.init('zh');
+        window.Cache = new Cache();  //客户端数据缓存
         gm.event = {};
         new EventManager().extendMethods(gm.event); //事件管理
         gm.mm = new ModuleManager(); //模块

@@ -8,6 +8,7 @@ GameRes.pathGlobalScence = prefix + "ui/global";   //公共资源
 GameRes.pathPreloadMusic = prefix + "sound/preload";    //提前预加载音频
 GameRes.pathLoadingScence = prefix + "ui/loading"; //loading界面
 GameRes.pathMainScence = prefix + "ui/main";		//主界面
+GameRes.pathGameScence = prefix + "ui/game";		//游戏界面
 GameRes.pathActivityView = prefix + "ui/activity";  //活动界面
 GameRes.pathAllMusic = prefix + "sound";    //所有音频文件
 
@@ -22,6 +23,9 @@ GameRes.prefabLoadingScence = prefix + "ui/loading/LoadingScence";
 
 //主界面
 GameRes.prefabMainScence = prefix + "ui/main/MainScence";
+
+//游戏界面
+GameRes.prefabGameScence = prefix + "ui/game/GameScence";
 
 //活动界面
 GameRes.prefabActivityView = prefix + "ui/activity/ActivityView";
