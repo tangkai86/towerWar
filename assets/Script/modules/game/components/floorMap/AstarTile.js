@@ -2,7 +2,7 @@
 var AstarTile = cc.Class({
     properties: {
         //瓦片大小
-        tileSize: cc.size(94,94),
+        tileSize: cc.size,
         //权重
         weight: {
             default: 0,
@@ -40,12 +40,14 @@ var AstarTile = cc.Class({
             type: cc.Node
         },
 
-        debugColor: cc.color(255, 187, 255, 255)
+        debugColor: cc.color(119, 119, 119, 255)
     },
 
     //初始化瓦片数据
-    initTile: function(pos, map) {
+    initTile: function(pos, tileSize, map) {
+        this.clearAstar();
         this.position = pos;
+        this.tileSize = tileSize;
         this.map = map;
     },
 
@@ -56,10 +58,18 @@ var AstarTile = cc.Class({
         return false;
     },
 
+    //清空寻路信息
     clearAstar: function() {
         this.weight = 0;
         this.distance = 0;
         this.last = null;
+    },
+
+    //重置瓦片地图
+    resetTile: function() {
+        this.clearAstar();
+        this.barrier = false;
+        this.npcGroup = [];
     },
 
     //是否可通行
@@ -86,6 +96,7 @@ var AstarTile = cc.Class({
             spr.type = cc.Sprite.Type.SLICED;
             spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalSprite9_2, cc.SpriteFrame);
             this.bgColorLayer.parent = this.map;
+            this.bgColorLayer.zIndex = -1;
             this.bgColorLayer.setContentSize(this.tileSize);
         }
         var posX = (this.position.x + 0.5) * this.tileSize.width;
@@ -98,6 +109,7 @@ var AstarTile = cc.Class({
     hideDebugDraw: function() {
         if(this.bgColorLayer){
             this.bgColorLayer.active = false;
+            this.bgColorLayer.color = this.debugColor;
         }
     }
 });

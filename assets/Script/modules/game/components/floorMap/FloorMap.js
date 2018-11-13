@@ -1,20 +1,35 @@
+/*
+    地图锚点必须在左下角
+*/
 var AstarTile = require("AstarTile");
+var Astar = require("Astar");
 var FloorMap = cc.Class({
     extends: cc.Component,
 
     properties: {
-        //横向格子数
+        //横向瓦片数
         horTiles: {
             default: 8,
             type: cc.Integer
         },
-        //纵向格子数
+        //纵向瓦片数
         verTiles: {
             default: 8,
             type: cc.Integer
-            
         },
+        //瓦片大小
+        tileSize: cc.size(94,94),
+        stepOfDuration : {
+            default: 0.2,
+            type: cc.Float
+        },
+        enabledDebugDraw: true,
         _astarGroup: []
+    },
+
+    onLoad: function() {
+        this._debugTileColor = cc.color(255, 187, 255, 255);
+        this._paths = [];
     },
 
     start: function() {
@@ -22,21 +37,16 @@ var FloorMap = cc.Class({
         this.initMapData();
         //初始化点击事件
         this.initTouchEvent();
-        var pos = cc.v2(0,0);
-        if(this.isCanCross(pos)){
-            cc.log("可以通过");
-        }else{
-            cc.log("不能通过");
-        }
     },
 
     //初始化地图数据
     initMapData: function() {
+        //地图数组
         for(var i=0; i<this.horTiles; i++){
             var verGroup = [];  //竖向地图数组
             for(var j=0; j<this.verTiles; j++){
                 var astarTile = new AstarTile();
-                astarTile.initTile(cc.v2(i, j), this.node);
+                astarTile.initTile(cc.v2(i, j), this.tileSize, this.node);
                 astarTile.showDebugDraw(); //显示色块
                 verGroup.push(astarTile);
                 //cc.log("当前地图块数据为:"+astarTile.position);
@@ -44,6 +54,9 @@ var FloorMap = cc.Class({
             this._astarGroup.push(verGroup);
         }
         cc.log(this._astarGroup);
+
+        //a*寻路
+        this.aStar = new Astar(this._astarGroup);
     },
 
     //初始化点击事件
@@ -53,22 +66,47 @@ var FloorMap = cc.Class({
             var touchPos = event.touch.getLocation();
             let location = self.node.convertToNodeSpaceAR(touchPos);
             cc.log("当前点击坐标:"+location.x + ":"+ location.y);
-            let targetTilePos = self.tilePosistion(location);
+            let targetTilePos = self.getTilePosByPosition(location);
             cc.log("当前地图块坐标:"+targetTilePos);
             if (targetTilePos.x < 0 || targetTilePos.x >= self.horTiles || 
                 targetTilePos.y < 0 || targetTilePos.y >= self.verTiles) {
                 return true;
             }
-            var astarTile = self._astarGroup[targetTilePos.x][targetTilePos.y];
-            astarTile.showDebugDraw(cc.color(119, 119, 119, 255)); //显示色块
+            self.moveTo(targetTilePos)
             return true;
         }, self.node);
     },
 
-    //判断当前地图块是否可以通过
-    isCanCross: function(pos) {
-        var astarTile = this._astarGroup[pos.x][pos.y];
-        return astarTile.isCanCross();
+    moveTo: function(finish) {
+        if (this.enabledDebugDraw) {
+            this._clearDebugColor();
+        }
+        
+        var player = this.node.getChildByName('Sprite_npc_1');
+        player.stopAllActions();
+        var start = this.getTilePosByPosition(player.position);
+        this._paths = this.aStar.moveToward(start, finish);
+        if (this._paths.length < 1) {
+            cc.log('cannot find path');
+            return;
+        }
+
+        //显示寻路路径
+        for (let i = 0; i < this._paths.length; ++i) {
+            this._debugDraw(this._paths[i].position, this._debugTileColor, i);
+        }
+
+        //无路可走
+        if(this._paths.length <= 1) return;
+        let sequence = [];
+        let tileSize = this._astarGroup[0][0].tileSize;;
+        for (let i = 1; i < this._paths.length; ++i) {
+            let actionPos = this.getPositionByTilePos(this._paths[i].position);
+            actionPos.x += this.tileSize.width / 2;
+            actionPos.y += this.tileSize.width / 2;
+            sequence.push(cc.moveTo(this.stepOfDuration, actionPos));
+        }
+        player.runAction(cc.sequence(sequence));
     },
 
     //判断当前地图块是否可以放置
@@ -76,12 +114,32 @@ var FloorMap = cc.Class({
         // body...
     },
 
-    tilePosistion: function(pixelPosition) {
-        let mapSize = this.node.getContentSize();
-        let tileSize = this._astarGroup[0][0].tileSize;
-        let x = Math.floor(pixelPosition.x / tileSize.width);
-        let y = Math.floor(pixelPosition.y / tileSize.height);
+    getTilePosByPosition: function(pixelPosition) {
+        let x = Math.floor(pixelPosition.x / this.tileSize.width);
+        let y = Math.floor(pixelPosition.y / this.tileSize.height);
         return cc.v2(x, y);
+    },
+
+    getPositionByTilePos: function(pos) {
+        let x = pos.x * this.tileSize.width;
+        let y = pos.y * this.tileSize.height;
+        return cc.v2(x, y);
+    },
+
+    _clearDebugColor: function(sender) {
+        for (let i = 0; i < this._paths.length; ++i) {
+            let touchTile = this._paths[i];
+            touchTile.showDebugDraw();
+        }
+    },
+    
+    _debugDraw: function(tilePos, color) {
+        if (!this.enabledDebugDraw) {
+            return;
+        }
+        
+        let touchTile = this._astarGroup[tilePos.x][tilePos.y];
+        touchTile.showDebugDraw(color);
     },
 });
 

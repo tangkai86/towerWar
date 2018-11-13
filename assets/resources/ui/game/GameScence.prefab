@@ -23,18 +23,18 @@
         "__id__": 6
       },
       {
-        "__id__": 12
+        "__id__": 15
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 18
+        "__id__": 21
       }
     ],
     "_prefab": {
-      "__id__": 19
+      "__id__": 22
     },
     "_id": "",
     "_opacity": 255,
@@ -62,8 +62,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": -1,
+      "y": -3
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -208,11 +208,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 10
+        "__id__": 13
       }
     ],
     "_prefab": {
-      "__id__": 11
+      "__id__": 14
     },
     "_id": "",
     "_opacity": 255,
@@ -257,16 +257,20 @@
     "_parent": {
       "__id__": 6
     },
-    "_children": [],
-    "_tag": -1,
-    "_active": true,
-    "_components": [
+    "_children": [
       {
         "__id__": 8
       }
     ],
+    "_tag": -1,
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 11
+      }
+    ],
     "_prefab": {
-      "__id__": 9
+      "__id__": 12
     },
     "_id": "",
     "_opacity": 255,
@@ -286,7 +290,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 750,
-      "height": 750
+      "height": 752
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -295,7 +299,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": -375,
-      "y": -663
+      "y": -665
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -303,6 +307,97 @@
     "_globalZOrder": 0,
     "_opacityModifyRGB": false,
     "groupIndex": 0
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "Sprite_npc_1",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 7
+    },
+    "_children": [],
+    "_tag": -1,
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 9
+      }
+    ],
+    "_prefab": {
+      "__id__": 10
+    },
+    "_id": "",
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_cascadeOpacityEnabled": true,
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 60,
+      "height": 73
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_scaleX": 1,
+    "_scaleY": 1,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": 47,
+      "y": 51
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0,
+    "_opacityModifyRGB": false,
+    "groupIndex": 0
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 8
+    },
+    "_enabled": true,
+    "_spriteFrame": {
+      "__uuid__": "6bb227f9-74a5-4122-9f94-b8fcb99980e0"
+    },
+    "_type": 0,
+    "_sizeMode": 1,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_atlas": null
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__uuid__": "e7ce418b-297a-482f-946a-f1a360a1086b"
+    },
+    "fileId": "bcEbrsIM1EEJ8U+SWrjl/Q",
+    "sync": false
   },
   {
     "__type__": "4a866nP+axP469aRlelNf1f",
@@ -314,6 +409,13 @@
     "_enabled": true,
     "horTiles": 8,
     "verTiles": 8,
+    "tileSize": {
+      "__type__": "cc.Size",
+      "width": 94,
+      "height": 94
+    },
+    "stepOfDuration": 0.2,
+    "enabledDebugDraw": true,
     "_astarGroup": []
   },
   {
@@ -373,18 +475,18 @@
     },
     "_children": [
       {
-        "__id__": 13
+        "__id__": 16
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 16
+        "__id__": 19
       }
     ],
     "_prefab": {
-      "__id__": 17
+      "__id__": 20
     },
     "_id": "",
     "_opacity": 255,
@@ -427,18 +529,18 @@
     "_name": "New Sprite(Splash)",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 12
+      "__id__": 15
     },
     "_children": [],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 14
+        "__id__": 17
       }
     ],
     "_prefab": {
-      "__id__": 15
+      "__id__": 18
     },
     "_id": "",
     "_opacity": 255,
@@ -481,7 +583,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 13
+      "__id__": 16
     },
     "_enabled": true,
     "_spriteFrame": {
@@ -518,7 +620,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 12
+      "__id__": 15
     },
     "_enabled": true,
     "alignMode": 1,
