@@ -21,7 +21,7 @@ var AstarTile = cc.Class({
         },
         //地图节点
         map: cc.Node,
-        //方块格子的坐标
+        //瓦片的坐标
         position: cc.Vec2,
         //最短路径的下一个方块格子
         last: AstarTile,
@@ -35,7 +35,7 @@ var AstarTile = cc.Class({
             }
         },
         //格子里的行人
-        npcGroup: {
+        playerGroup: {
             default: [],
             type: cc.Node
         },
@@ -69,12 +69,7 @@ var AstarTile = cc.Class({
     resetTile: function() {
         this.clearAstar();
         this.barrier = false;
-        this.npcGroup = [];
-    },
-
-    //是否可通行
-    isCanCross: function() {
-        return !this.barrier;
+        this.playerGroup = [];
     },
 
     //是否可放置
@@ -82,9 +77,44 @@ var AstarTile = cc.Class({
         var canPlace = true;
         if(this.barrier)
             canPlace = false;
-        if(this.npcGroup.length > 0)
+        if(this.playerGroup.length > 0)
             canPlace = false;
         return canPlace;
+    },
+
+    //增加地形
+    addBarrier: function(){
+        this.barrier = true;
+    },
+
+    //移除地形
+    removeBarrier: function(){
+        this.barrier = false;
+    },
+
+    //是否可通行
+    isCanCross: function() {
+        return !this.barrier;
+    },
+
+    //增加行人
+    addPeople: function(people){
+        this.playerGroup.push(people);
+    },
+
+    //移除行人
+    removePeople: function(people){
+        for(var i=this.playerGroup.length-1; i>=0; i--){
+            if(this.playerGroup[i] === people){
+                this.playerGroup.splice(i,1);
+                cc.log("瓦片:"+this.position+"行人数:"+this.playerGroup.length);
+            }
+        }
+    },
+
+    //获取行人
+    getPeople: function(){
+        return this.playerGroup;
     },
 
     showDebugDraw: function(color) {

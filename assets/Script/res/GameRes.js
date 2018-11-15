@@ -26,6 +26,9 @@ GameRes.prefabMainScence = prefix + "ui/main/MainScence";
 
 //游戏界面
 GameRes.prefabGameScence = prefix + "ui/game/GameScence";
+GameRes.prefabFloor = prefix + "ui/game/room/Panel_floor";  //地板
+GameRes.prefabEquipBath = prefix + "ui/game/equip/Sprite_equipBath";    //浴盆
+GameRes.prefabEquipLadder = prefix + "ui/game/equip/Sprite_equipLadder"; //玩具爬梯
 
 //活动界面
 GameRes.prefabActivityView = prefix + "ui/activity/ActivityView";

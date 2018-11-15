@@ -1,16 +1,10 @@
 var AstarTile = require("AstarTile");
-var AStarMoveType = cc.Enum({
-    FOUR_DIRECTION: 1,
-    EIGHT_DIRECTION: 2
-});
-
+var AstarMoveType = require('AstarMoveType');
 var Astar = cc.Class({
-    extends: cc.Component,
-
     properties: {
-        moveType: {
-            default: AStarMoveType.FOUR_DIRECTION,
-            type: AStarMoveType
+        _moveType: {
+            default: null,
+            type: AstarMoveType
         },
 
         _astarGroup:[]  //AstarTile二维数组
@@ -20,6 +14,10 @@ var Astar = cc.Class({
         if (arguments.length > 0) {
             this._astarGroup = arguments[0];
         }
+
+        if (arguments.length > 1) {
+            this._moveType = arguments[1];
+        }
     },
 
     onLoad: function () {
@@ -27,9 +25,9 @@ var Astar = cc.Class({
         this._closed = [];
     },
     
-    _indexOfTileArray: function(value, TileArray) {
+    _indexOfTileArray: function(tile, TileArray) {
         for (let i = 0; i < TileArray.length; ++i) {
-            if (value.equals(TileArray[i].position)) {
+            if (tile.equalTo(TileArray[i])) {
                 return i;
             }
         }
@@ -50,7 +48,7 @@ var Astar = cc.Class({
     
     moveToward: function(start, finish, findEnd = true) {
     	//清空寻路
-        this.clearAstar()
+        this.clearAstar();
         let paths = [];
         let finishTile = null;
         
@@ -69,25 +67,24 @@ var Astar = cc.Class({
                 }
             }
             
-            let borderPositions = this._borderMovablePoints(currentTile.position);
-            //cc.log("查找方向:"+borderPositions);
-            for (let i = 0; i < borderPositions.length; ++i) {
-                let borderPosition = borderPositions[i];
-                if (this._indexOfTileArray(borderPosition, this._closed) != -1) {
-                    borderPositions.splice(i, 1);
+            let borderTiles = this._borderMovableTile(currentTile.position);
+            //cc.log("查找方向:"+borderTiles);
+            for (let i = 0; i < borderTiles.length; ++i) {
+                let tile = borderTiles[i];
+                if (this._indexOfTileArray(tile, this._closed) != -1) {
+                    borderTiles.splice(i, 1);
                     i--;
                     continue;
                 }
-                
-                let tile = this.getTileByPos(borderPosition);
+
                 //zero: 改变查找权重
-                let moveCost = this._costToMove(borderPosition, currentTile.position)
-                let index = this._indexOfTileArray(borderPosition, this._open);
+                let moveCost = this._costToMove(tile.position, currentTile.position);
+                let index = this._indexOfTileArray(tile, this._open);
                 
                 if (index == -1) {
                 	tile.last = currentTile;
                     tile.weight = currentTile.weight + moveCost;
-                    let distancePoint = borderPosition.sub(finish);
+                    let distancePoint = tile.position.sub(finish);
                     tile.distance = Math.abs(distancePoint.x) + Math.abs(distancePoint.y);
                     this._insertToOpen(tile);
                 } else {
@@ -126,7 +123,7 @@ var Astar = cc.Class({
     },
     
     _costToMove(positionLeft, positionRight) {
-        if (this.moveType == AStarMoveType.EIGHT_DIRECTION) {
+        if (this._moveType == AstarMoveType.EIGHT_DIRECTION) {
             /**
              * diagonal length: 1.41 ≈ Math.sqrt(x * x + y * y)
              * line length: 1
@@ -140,66 +137,60 @@ var Astar = cc.Class({
             return 1;
         }
     },
-    
-    _borderMovablePoints: function(position) {
+
+    _borderMovableTile: function(pos) {
         var results = [];
         let hasTop = false;
         let hasBottom = false;
         let hasLeft = false;
         let hasRight = false;
+        let x = pos.x;
+        let y = pos.y;
         
         // top
-        let top = cc.v2(position.x, position.y + 1);
-        if (this.isCanCross(top)) {
-            results.push(top);
+        if (this.isCanCross(x, y+1)) {
+            results.push(this._astarGroup[x][y+1]);
             hasTop = true;
         }
         // bottom
-        let bottom = cc.v2(position.x, position.y - 1);
-        if (this.isCanCross(bottom)) {
-            results.push(bottom);
+        if (this.isCanCross(x, y-1)) {
+            results.push(this._astarGroup[x][y-1]);
             hasBottom = true;
         }
         // left
-        let left = cc.v2(position.x - 1, position.y);
-        if (this.isCanCross(left)) {
-            results.push(left);
+        if (this.isCanCross(x-1, y)) {
+            results.push(this._astarGroup[x-1][y]);
             hasLeft = true;
         }
         // right
-        let right = cc.v2(position.x + 1, position.y);
-        if (this.isCanCross(right)) {
-            results.push(right);
+        if (this.isCanCross(x+1, y)) {
+            results.push(this._astarGroup[x+1][y]);
             hasRight = true;
         }
         
-        if (this.moveType == AStarMoveType.EIGHT_DIRECTION) {
+        if (this._moveType == AstarMoveType.EIGHT_DIRECTION) {
             // Top Left
-            let topLeft = cc.v2(position.x - 1, position.y + 1);
             if (hasTop && hasLeft) {
-                if (this.isCanCross(topLeft)) {
-                    results.push(topLeft);
+                if (this.isCanCross(x-1, y+1)) {
+                    results.push(this._astarGroup[x-1][y+1]);
                 }
             }
             // Top Right
-            let topRight = cc.v2(position.x + 1, position.y + 1);
             if (hasTop && hasRight) {
-                if (this.isCanCross(topRight)) {
-                    results.push(topRight);
+                if (this.isCanCross(x+1, y+1)) {
+                    results.push(this._astarGroup[x+1][y+1]);
                 }
             }
             // Bottom Left
-            let bottomLeft = cc.v2(position.x - 1, position.y - 1);
             if (hasBottom && hasLeft) {
-                if (this.isCanCross(bottomLeft)) {
-                    results.push(bottomLeft);
+                if (this.isCanCross(x-1, y-1)) {
+                    results.push(this._astarGroup[x+1][y+1]);
                 }
             }
             // Bottom Right
-            let bottomRight = cc.v2(position.x + 1, position.y - 1);
             if (hasBottom && hasRight) {
-                if (this.isCanCross(bottomRight)) {
-                    results.push(bottomRight);
+                if (this.isCanCross(x+1, y-1)) {
+                    results.push(this._astarGroup[x+1][y-1]);
                 }
             }
         }
@@ -212,9 +203,9 @@ var Astar = cc.Class({
     },
 
     //判断地图块是否可以通过
-    isCanCross: function(pos) {
-    	if(this._astarGroup[pos.x] && this._astarGroup[pos.x][pos.y]){
-    		var astarTile = this._astarGroup[pos.x][pos.y];
+    isCanCross: function(x, y) {
+    	if(this._astarGroup[x] && this._astarGroup[x][y]){
+    		var astarTile = this._astarGroup[x][y];
         	return astarTile.isCanCross();
     	}
         return false;
