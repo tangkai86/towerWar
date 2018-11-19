@@ -25,7 +25,7 @@ var AstarTile = cc.Class({
         position: cc.Vec2,
         //最短路径的下一个方块格子
         last: AstarTile,
-        //是否有路障
+        //路障地形
         barrier: {
             set: function(value) {
                 this._barrier = value;
@@ -34,6 +34,8 @@ var AstarTile = cc.Class({
                 return this._barrier;
             }
         },
+        //特殊地形,可通过,不可摆放
+        specialBarrier: null,
         //格子里的行人
         playerGroup: {
             default: [],
@@ -79,7 +81,14 @@ var AstarTile = cc.Class({
             canPlace = false;
         if(this.playerGroup.length > 0)
             canPlace = false;
+        if(this.specialBarrier)
+            canPlace = false;
         return canPlace;
+    },
+
+    //设置特殊地形
+    setSpecialBarrier: function(name){
+        this.specialBarrier = name;
     },
 
     //增加地形
@@ -107,7 +116,7 @@ var AstarTile = cc.Class({
         for(var i=this.playerGroup.length-1; i>=0; i--){
             if(this.playerGroup[i] === people){
                 this.playerGroup.splice(i,1);
-                cc.log("瓦片:"+this.position+"行人数:"+this.playerGroup.length);
+                //cc.log("瓦片:"+this.position+"行人数:"+this.playerGroup.length);
             }
         }
     },

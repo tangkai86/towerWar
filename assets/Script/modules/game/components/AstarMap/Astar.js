@@ -134,7 +134,11 @@ var Astar = cc.Class({
              */
             return (positionLeft.x != positionRight.x) && (positionLeft.y != positionRight.y) ? 14 : 10;
         } else {
-            return 1;
+            //使横向与纵向权重不一样:防止出现阶梯路线
+            if(positionLeft.x != positionRight.x)
+                return 1;
+            if(positionLeft.y != positionRight.y)
+                return 1.01;
         }
     },
 

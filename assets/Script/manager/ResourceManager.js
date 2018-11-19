@@ -50,6 +50,7 @@ var ResourceManager = cc.Class({
 				//cc.log("加载进度:"+completedCount);
 	        }, function(errors, resource, urls) {
 	        	console.log(resource);
+	        	cc.log("加载资源出错:"+urls);
 	            if (errors && errors.length > 0) {
 	                setTimeout(function() {
 	                    self.load(module, iterator, complete);

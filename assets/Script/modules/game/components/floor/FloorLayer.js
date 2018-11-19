@@ -8,7 +8,25 @@ var FloorLayer = cc.Class({
     },
 
     start () {
+        this.equipTab = [];
         this.aStarMap = this.node.getComponent("AstarMap");
+        this.floorEnter = [cc.v2(3,0), cc.v2(4,0)];     //楼层入口
+        this.floorExport = [cc.v2(3,7), cc.v2(4,7)];    //楼层出口
+        //地形设置入口
+        for(var i=0; i<this.floorEnter.length; i++){
+            var enterPos = this.floorEnter[i];
+            var tile = this.aStarMap.getTileByPos(enterPos);
+            tile.setSpecialBarrier("enter");
+            tile.showDebugDraw();
+        }
+        //地形设置出口
+        for(var i=0; i<this.floorExport.length; i++){
+            var exportPos = this.floorExport[i];
+            var tile = this.aStarMap.getTileByPos(exportPos);
+            tile.setSpecialBarrier("export");
+            tile.showDebugDraw();
+        }
+        cc.log("初始化地图");
     },
 
     //初始化楼层
@@ -37,15 +55,17 @@ var FloorLayer = cc.Class({
         var bathNode = cc.instantiate(prefab);
         bathNode.parent = this.node;
         var Equipment = bathNode.getComponent("Equipment");
-        Equipment.initQuip(args, this.aStarMap);
+        Equipment.initEquip(args, this.aStarMap);
+        this.equipTab.push(bathNode);
     },
 
     createEquipLadder: function(args){
         var prefab = cc.loader.getRes(GameRes.prefabEquipLadder, cc.Prefab);
-        var bathNode = cc.instantiate(prefab);
-        bathNode.parent = this.node;
-        var Equipment = bathNode.getComponent("Equipment");
-        Equipment.initQuip(args, this.aStarMap);
+        var ladderNode = cc.instantiate(prefab);
+        ladderNode.parent = this.node;
+        var Equipment = ladderNode.getComponent("Equipment");
+        Equipment.initEquip(args, this.aStarMap);
+        this.equipTab.push(ladderNode);
     },
 
     //增加NPC
@@ -53,28 +73,32 @@ var FloorLayer = cc.Class({
 
     },
 
-    //检查设备是否可用
+    //检查所有设备是否可用: 检查设备是否可用之前要先寻路一次,对瓦片进行标记
     checkEquipsUsefull: function () {
-
-    },
-
-    //检查设备是否可使用
-    checkEquipUsefull: function () {
-        var usefull = false;
-        var equipPosition = cc.v2(this.position.x - this.getContentSize().width/2, this.position.y - this.getContentSize().height/2);
-        var equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
-        for(var i=0; i<this.placeTile.x; i++){
-            for(var j=0; j<this.placeTile.y; j++){
-                var tileBorders = this.getTileBorders(cc.v2(equipPos.x + i, equipPos.y + j));
-                for(var k=0; k<tileBorders.length; k++){
-                    var tile = this.aStarMap.getTileByPos(tileBorders[i]);
-                    //周围瓦片可以被寻路 则设备可使用
-                    if(tile.last){
-                        return true;
-                    }
-                }
+        var usefull = true;
+        for(var i=0; i<this.equipTab.length; i++){
+            var equip = this.equipTab[i];
+            if(!this.checkEquipUsefull(equip)){
+                usefull = false;
+                break;
             }
         }
+        return usefull;
+    },
+
+    //检查单个设备是否可使用
+    checkEquipUsefull: function (equipNode) {
+        var usefull = false;
+        var Equipment = equipNode.getComponent("Equipment");
+        var equipBordersPos = Equipment.getEquipBordersPos();
+        for(var i=0; i<equipBordersPos.length; i++){
+            var tile = this.aStarMap.getTileByPos(equipBordersPos[i]);
+            if(tile.last){
+                usefull = true;
+                break;
+            }
+        }
+        return usefull;
     },
 
     //检查是否阻碍通行

@@ -69,26 +69,27 @@ var AstarMap = cc.Class({
     initTouchEvent: function() {
         var self = this;
         self.node.on(cc.Node.EventType.TOUCH_END, function (event) {
-            var touchPos = event.touch.getLocation();
-            let location = self.node.convertToNodeSpaceAR(touchPos);
-            cc.log("当前点击坐标:"+location.x + ":"+ location.y);
-            let targetTilePos = self.getTilePosByPosition(location);
-            cc.log("当前地图块坐标:"+targetTilePos);
-            if (targetTilePos.x < 0 || targetTilePos.x >= self.horTiles || 
-                targetTilePos.y < 0 || targetTilePos.y >= self.verTiles) {
-                return true;
-            }
-            self.moveTo(targetTilePos);
-            return true;
+            // var touchPos = event.touch.getLocation();
+            // let location = self.node.convertToNodeSpaceAR(touchPos);
+            // cc.log("当前点击坐标:"+location.x + ":"+ location.y);
+            // let targetTilePos = self.getTilePosByPosition(location);
+            // cc.log("当前地图块坐标:"+targetTilePos);
+            // if (targetTilePos.x < 0 || targetTilePos.x >= self.horTiles ||
+            //     targetTilePos.y < 0 || targetTilePos.y >= self.verTiles) {
+            //     return true;
+            // }
+            // var player = this.node.getChildByName('Sprite_npc_1');
+            // self.moveTo(player, targetTilePos);
+            // return true;
         }, self.node);
     },
 
-    moveTo: function(finish) {
+    moveTo: function(player, finish) {
         if (this.enabledDebugDraw) {
             this._clearDebugColor();
         }
         
-        var player = this.node.getChildByName('Sprite_npc_1');
+
         player.stopAllActions();
         var start = this.getTilePosByPosition(player.position);
 
@@ -104,27 +105,36 @@ var AstarMap = cc.Class({
         // cc.log("寻路后时间:"+lastTime);
         // cc.log("寻路总时间:"+(lastTime-curTime));
 
-        this._paths = this.aStar.moveToward(start, finish);
+        this._paths = this.getMovePathTiles(start, finish);
         if (this._paths.length < 1) {
             cc.log('cannot find path');
             return;
-        }
-
-        //显示寻路路径
-        for (let i = 0; i < this._paths.length; ++i) {
-            this._debugDraw(this._paths[i].position, this._debugTileColor, i);
         }
 
         //无路可走
         if(this._paths.length <= 1) return;
         let sequence = [];
         for (let i = 1; i < this._paths.length; ++i) {
-            let actionPos = this.getPositionByTilePos(this._paths[i].position);
-            actionPos.x += this.tileSize.width / 2;
-            actionPos.y += this.tileSize.width / 2;
+            let actionPos = this.getCenterByTilePos(this._paths[i].position);
             sequence.push(cc.moveTo(this.stepOfDuration, actionPos));
         }
-        player.runAction(cc.sequence(sequence));
+        if(sequence.length > 1){
+            player.runAction(cc.sequence(sequence));
+        }else {
+            player.runAction(sequence[0]);
+        }
+    },
+
+    //获取寻路路径
+    getMovePathTiles: function(start, finish){
+        var movePath = this.aStar.moveToward(start, finish);
+        //显示寻路路径
+        if (this.enabledDebugDraw) {
+            for (let i = 0; i < this._paths.length; ++i) {
+                this._debugDraw(this._paths[i].position, this._debugTileColor, i);
+            }
+        }
+        return movePath;
     },
 
     //判断瓦片是否可以放置
@@ -181,6 +191,18 @@ var AstarMap = cc.Class({
         return cc.v2(x, y);
     },
 
+    getCenterByTilePos: function(pos){
+        let tilePosition = this.getPositionByTilePos(pos);
+        tilePosition.x += this.tileSize.width*0.5;
+        tilePosition.y += this.tileSize.height*0.5;
+        return tilePosition;
+    },
+
+    //获取瓦片大小
+    getTileSize: function(){
+        return this.tileSize;
+    },
+
     _clearDebugColor: function(sender) {
         for (let i = 0; i < this._paths.length; ++i) {
             let touchTile = this._paths[i];
@@ -189,12 +211,9 @@ var AstarMap = cc.Class({
     },
     
     _debugDraw: function(tilePos, color) {
-        if (!this.enabledDebugDraw) {
-            return;
-        }
-        
+        let drawColor = color || this._debugTileColor;
         let touchTile = this._astarGroup[tilePos.x][tilePos.y];
-        touchTile.showDebugDraw(color);
+        touchTile.showDebugDraw(drawColor);
     },
 });
 
