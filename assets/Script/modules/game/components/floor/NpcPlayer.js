@@ -5,9 +5,9 @@ var NpcPlayer = cc.Class({
 
     properties: {
         level:  1,          //等级
-        moveTime: {        //移动时间
-            default: 0.2,
-            type: cc.Float
+        moveSpeed: {        //移动时间
+            default: 200,
+            type: cc.Integer
         },
         aStarMap: AstarMap,
         floorLayer: cc.Node
@@ -16,6 +16,10 @@ var NpcPlayer = cc.Class({
     start () {
         this.initTouchEvent(); //点击事件
         this.autoWalk();
+    },
+
+    update: function(dt){
+        
     },
 
     //初始化点击事件
@@ -71,32 +75,34 @@ var NpcPlayer = cc.Class({
             return;
         }
 
-        let i=-1;
+        let i=0;
         let tileSize = self.aStarMap.getTileSize();
         let tileHalfWidth = tileSize.width / 2;
         let tileHalfHeight = tileSize.height / 2;
         let moveAction = function () {
-            i = i + 1;
             let curTile = movePathTiles[i];
-            if(curTile && curTile.isCanCross()){
+            let nextTile = movePathTiles[i+1];
+            i = i + 1;
+            if(nextTile && nextTile.isCanCross()){
                 let curTilePosition = self.aStarMap.getCenterByTilePos(curTile.position);
-                if(curTile.getPeople().length > 0){
-                    let addX = Math.floor(Math.random()*60) - 30;
-                    let addY = Math.floor(Math.random()*60) - 30;
-                    curTilePosition.addSelf(cc.v2(addX, addY));
-                }
-                curTile.addPeople(self.node);
+                let nextTilePosition = self.aStarMap.getCenterByTilePos(nextTile.position);
+                let curTileBorder = curTilePosition.add(nextTilePosition.sub(curTilePosition).divSelf(2.1));
+                let moveTime = self.getMoveTime(self.node.position, curTileBorder);
                 self.node.runAction(cc.sequence(
-                    cc.moveTo(self.moveTime, curTilePosition),
+                    cc.moveTo(moveTime, curTileBorder),
                     cc.callFunc(function () {
-                        let nextTile = movePathTiles[i+1];
                         if(nextTile && nextTile.isCanCross()){
-                            let nextTilePosition = self.aStarMap.getCenterByTilePos(nextTile.position);
-                            let curTileBorder = curTilePosition.add(nextTilePosition.sub(curTilePosition).divSelf(2.1));
+                            if(nextTile.getPeople().length > 0 && !movePathTiles[i+1]){
+                                let addX = Math.floor(Math.random()*60) - 30;
+                                let addY = Math.floor(Math.random()*60) - 30;
+                                nextTilePosition.addSelf(cc.v2(addX, addY));
+                            }
+                            curTile.removePeople(self.node);
+                            nextTile.addPeople(self.node);
+                            let moveTime = self.getMoveTime(self.node.position, nextTilePosition);
                             self.node.runAction(cc.sequence(
-                                cc.moveTo(self.moveTime, curTileBorder),
+                                cc.moveTo(moveTime, nextTilePosition),
                                 cc.callFunc(function () {
-                                    curTile.removePeople(self.node);
                                     moveAction();
                                 })
                             ));
@@ -111,12 +117,12 @@ var NpcPlayer = cc.Class({
         };
         moveAction();
     },
-    
-    //移动到坐标点
-    moveToPostion: function (position, moveCb) {
-        let distancePoint = self.node.position.sub(position);
-        let moveTime = (Math.abs(distancePoint.x) + Math.abs(distancePoint.y))/self.moveSpeed;
 
+    //获取移动时间
+    getMoveTime: function (startPos, endPos) {
+        let distance = startPos.sub(endPos);
+        let time = Math.sqrt(distance.x*distance.x + distance.y*distance.y)/this.moveSpeed;
+        return time;
     }
 });
 
