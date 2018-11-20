@@ -36,11 +36,11 @@ var AstarMap = cc.Class({
     onLoad: function() {
         this._debugTileColor = cc.color(255, 187, 255, 255);
         this._paths = [];
+        //初始化地图数据
+        this.initMapData();
     },
 
     start: function() {
-        //初始化地图数据
-        this.initMapData();
         //初始化点击事件
         this.initTouchEvent();
     },
@@ -126,8 +126,8 @@ var AstarMap = cc.Class({
     },
 
     //获取寻路路径
-    getMovePathTiles: function(start, finish){
-        var movePath = this.aStar.moveToward(start, finish);
+    getMovePathTiles: function(start, finish, findEnd){
+        var movePath = this.aStar.moveToward(start, finish, findEnd);
         //显示寻路路径
         if (this.enabledDebugDraw) {
             for (let i = 0; i < this._paths.length; ++i) {
@@ -137,8 +137,23 @@ var AstarMap = cc.Class({
         return movePath;
     },
 
+    //获取瓦片by Pos
+    getTileByPos: function(pos){
+        if(!this._astarGroup[pos.x] || !this._astarGroup[pos.x][pos.y]) return null;
+        var tile = this.aStar.getTileByPos(pos);
+        return tile;
+    },
+
+    //获取瓦片by Position
+    getTileByPosition: function(position){
+        var pos = this.getTilePosByPosition(position);
+        var tile = this.getTileByPos(pos);
+        return tile;
+    },
+
     //判断瓦片是否可以放置
     isTileCanPlaced: function(pos) {
+        if(!this._astarGroup[pos.x] || !this._astarGroup[pos.x][pos.y]) return false;
         var tile = this._astarGroup[pos.x][pos.y];
         return tile.isCanPlaced();
     },

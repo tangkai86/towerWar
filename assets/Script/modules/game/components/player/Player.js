@@ -1,51 +1,33 @@
-var AstarMap = require("AstarMap");
-var FloorLayer = require("FloorLayer");
-var NpcPlayer = cc.Class({
+var Player = cc.Class({
     extends: cc.Component,
-
     properties: {
+        _className: {
+            default: "Player",
+            override: true
+        },
         level:  1,          //等级
-        moveSpeed: {        //移动时间
+        moveSpeed: {       //移动速度
             default: 200,
             type: cc.Integer
         },
-        aStarMap: AstarMap,
-        floorLayer: cc.Node
     },
 
     start () {
-        this.initTouchEvent(); //点击事件
         this.autoWalk();
     },
 
     update: function(dt){
-        
+        this.node.zIndex = 1000 - this.node.position.y;
     },
 
-    //初始化点击事件
-    initTouchEvent: function() {
-        var self = this;
-        self.node.on(cc.Node.EventType.TOUCH_START, function (event) {
+    initPlayer: function (args) {
+        this.aStarMap = this.node.parent.getComponent("AstarMap");
 
-        }, self.node);
-        self.node.on(cc.Node.EventType.TOUCH_MOVE, function (event) {
-
-        }, self.node);
-        self.node.on(cc.Node.EventType.TOUCH_END, function (event) {
-
-        }, self.node);
-        self.node.on(cc.Node.EventType.TOUCH_CANCEL, function (event) {
-
-        }, self.node);
-    },
-
-    initNpcPlayer: function (args, floorNode) {
-        this.aStarMap = floorNode.getComponent("AstarMap");
-        this.floorLayer = floorNode.getComponent("FloorLayer");
-
-        //npc位置
-        var npcPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
-        this.node.setPosition(npcPosition);
+        //player位置
+        var playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
+        this.node.setPosition(playerPosition);
+        var tile = this.aStarMap.getTileByPos(cc.v2(args.x, args.y));
+        tile.addPeople(this.node);
     },
 
     //自由移动
@@ -70,7 +52,6 @@ var NpcPlayer = cc.Class({
         //无路可走
         if (movePathTiles.length <= 1) {
             cc.log('cannot find path');
-            console.log(start);
             if(moveCb) moveCb();
             return;
         }
@@ -126,4 +107,4 @@ var NpcPlayer = cc.Class({
     }
 });
 
-module.exports = NpcPlayer;
+module.exports = Player;

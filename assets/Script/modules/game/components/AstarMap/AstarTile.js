@@ -135,7 +135,7 @@ var AstarTile = cc.Class({
             spr.type = cc.Sprite.Type.SLICED;
             spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalSprite9_2, cc.SpriteFrame);
             this.bgColorLayer.parent = this.map;
-            this.bgColorLayer.zIndex = -1;
+            this.bgColorLayer.zIndex = 1;
             this.bgColorLayer.setContentSize(this.tileSize);
         }
         var posX = (this.position.x + 0.5) * this.tileSize.width;

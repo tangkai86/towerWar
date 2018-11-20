@@ -18,7 +18,9 @@ var GameView = cc.Class({
 
     },
 
-    onLoad: function(){
+    //Override
+    start: function () {
+        this._super();
         this.userEnter();
     },
 
@@ -36,20 +38,23 @@ var GameView = cc.Class({
 
     //玩家进入游戏
     userEnter: function(args){
+        cc.log("玩家进入房间");
         var user = {
             floors: [
                 {
                     floor: 1,
                     equips: [
                         {level: 10, type: 1, x: 2, y: 2},
+                        {level: 15, type: 2, x: 4, y: 4},
+                        {level: 15, type: 2, x: 4, y: 4},
+                        {level: 15, type: 2, x: 4, y: 4},
+                        {level: 15, type: 2, x: 4, y: 4},
                         {level: 15, type: 2, x: 4, y: 4}
-                    ]
-                },
-                {
-                    floor: 2,
-                    equips: [
-                        {level: 10, type: 1, x: 2, y: 2},
-                        {level: 15, type: 2, x: 4, y: 4}
+                    ],
+                    employs: [
+                        {level: 10, type: 1, x: 5, y: 5},
+                        {level: 15, type: 1, x: 2, y: 2},
+                        {level: 20, type: 1, x: 3, y: 3},
                     ]
                 }
             ],
@@ -58,17 +63,13 @@ var GameView = cc.Class({
 
         //初始化楼层
         for(var i=0; i<user.floors.length; i++){
-            //this.roomsManager.initRoom(user);
+            this.roomsManager.initRoom(user);
         }
     },
 
     clickEvent: function(event, customEventData) {
         this._super(event, customEventData);
         
-    },
-
-    start () {
-
     }
 });
 

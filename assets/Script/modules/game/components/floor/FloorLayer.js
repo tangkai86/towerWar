@@ -1,5 +1,4 @@
-var EquipmentType = require("EquipmentType");
-var Equipment = require("Equipment");
+var EquipmentConfig = require("EquipmentConfig");
 var FloorLayer = cc.Class({
     extends: cc.Component,
 
@@ -7,8 +6,12 @@ var FloorLayer = cc.Class({
 
     },
 
-    start () {
-        this.equipTab = [];
+    onLoad: function() {
+        this.equipTab = [];     //设备
+        this.employTab = [];    //店员
+        this.guestTab = [];     //顾客
+        this.catTab = [];       //猫咪
+
         this.aStarMap = this.node.getComponent("AstarMap");
         this.floorEnter = [cc.v2(3,0), cc.v2(4,0)];     //楼层入口
         this.floorExport = [cc.v2(3,7), cc.v2(4,7)];    //楼层出口
@@ -26,13 +29,34 @@ var FloorLayer = cc.Class({
             tile.setSpecialBarrier("export");
             tile.showDebugDraw();
         }
-        cc.log("初始化地图");
+    },
+
+    start () {
+
     },
 
     //初始化楼层
     initFloor: function(args){
+        //初始化店员
+        var employs = args.employs || [];
+        for(var i=0; i<employs.length; i++){
+            this.addPlayerEmploy(employs[i]);
+        }
+
+        //初始化顾客
+        var guests = args.guests || [];
+        for(var i=0; i<guests.length; i++){
+            this.addPlayerGuest(guests[i]);
+        }
+
+        //初始化猫咪
+        var cats = args.cats || [];
+        for(var i=0; i<cats.length; i++){
+            this.addPlayerCat(cats[i]);
+        }
+
         //初始化设备
-        var equips = args.equips;
+        var equips = args.equips || [];
         for(var i=0; i<equips.length; i++){
             this.addEquip(equips[i]);
         }
@@ -40,71 +64,100 @@ var FloorLayer = cc.Class({
 
     //增加设备
     addEquip: function (args) {
-        switch (args.type) {
-            case EquipmentType.BATH:
-                this.createEquipBath(args);
-                break;
-            case EquipmentType.LADDER:
-                this.createEquipLadder(args);
-                break;
-        }
+        var prefab = cc.loader.getRes(EquipmentConfig.PREFAB[args.type], cc.Prefab);
+        var equipNode = cc.instantiate(prefab);
+        equipNode.parent = this.node;
+        var equipment = equipNode.getComponent("Equipment");
+        equipment.initEquip(args);
+        this.equipTab.push(equipNode);
     },
 
-    createEquipBath: function(args){
-        var prefab = cc.loader.getRes(GameRes.prefabEquipBath, cc.Prefab);
-        var bathNode = cc.instantiate(prefab);
-        bathNode.parent = this.node;
-        var Equipment = bathNode.getComponent("Equipment");
-        Equipment.initEquip(args, this.aStarMap);
-        this.equipTab.push(bathNode);
+    //增加店员
+    addPlayerEmploy: function (args) {
+        var prefab = cc.loader.getRes(GameRes.prefabPlayerEmploy, cc.Prefab);
+        var employNode = cc.instantiate(prefab);
+        employNode.parent = this.node;
+        var playerEmploy = employNode.getComponent("PlayerEmploy");
+        playerEmploy.initPlayer(args);
+        this.employTab.push(employNode);
     },
 
-    createEquipLadder: function(args){
-        var prefab = cc.loader.getRes(GameRes.prefabEquipLadder, cc.Prefab);
-        var ladderNode = cc.instantiate(prefab);
-        ladderNode.parent = this.node;
-        var Equipment = ladderNode.getComponent("Equipment");
-        Equipment.initEquip(args, this.aStarMap);
-        this.equipTab.push(ladderNode);
+    //增加猫咪
+    addPlayerCat: function(args){
+
     },
 
-    //增加NPC
-    addNpcPlayer: function (args) {
+    //增加顾客
+    addPlayerGuest: function(args){
 
     },
 
     //检查所有设备是否可用: 检查设备是否可用之前要先寻路一次,对瓦片进行标记
     checkEquipsUsefull: function () {
+        //以入口为原点寻路到出口, 遍历所有的瓦片
+        var enterPos = this.floorEnter[0];
+        var exportPos = this.floorExport[0];
+        this.aStarMap.getMovePathTiles(enterPos, exportPos, false);
+        console.log(this.aStarMap._astarGroup);
+
         var usefull = true;
+        //设备是否可用
         for(var i=0; i<this.equipTab.length; i++){
-            var equip = this.equipTab[i];
-            if(!this.checkEquipUsefull(equip)){
+            var equipNode = this.equipTab[i];
+            var Equipment = equipNode.getComponent("Equipment");
+            if(!Equipment.checkEquipUsefull()){
                 usefull = false;
-                break;
+                return usefull;
             }
         }
+
+        //人物是否可以正常通行
+        usefull = this.checkBlockCross();
         return usefull;
     },
 
-    //检查单个设备是否可使用
-    checkEquipUsefull: function (equipNode) {
-        var usefull = false;
-        var Equipment = equipNode.getComponent("Equipment");
-        var equipBordersPos = Equipment.getEquipBordersPos();
-        for(var i=0; i<equipBordersPos.length; i++){
-            var tile = this.aStarMap.getTileByPos(equipBordersPos[i]);
-            if(tile.last){
-                usefull = true;
-                break;
-            }
-        }
-        return usefull;
-    },
-
-    //检查是否阻碍通行
+    //人物是否可以正常通行
     checkBlockCross: function () {
+        //出口是否可以抵达
+        for(let i=0; i<this.floorExport.length; i++){
+            var exportPos = this.floorExport[i];
+            var tile = this.aStarMap.getTileByPos(exportPos);
+            if(!tile.last){
+                cc.log("出口不可达");
+                return false;
+            }
+        }
 
+        //所有店员是否能抵达出入口
+        for(let i=0; i<this.employTab.length; i++){
+            var employNode = this.employTab[i];
+            var tile = this.aStarMap.getTileByPosition(employNode.position);
+            if(!tile.last){
+                cc.log("店员不可抵达出入口");
+                return false;
+            }
+        }
+
+        //所有顾客是否能抵达出入口
+        for(let i=0; i<this.guestTab.length; i++){
+            var guestNode = this.guestTab[i];
+            var tile = this.aStarMap.getTileByPosition(guestNode.position);
+            if(!tile.last){
+                cc.log("顾客不可抵达出入口");
+                return false;
+            }
+        }
+
+        //所有猫咪是否可以抵达出入口
+        for(let i=0; i<this.catTab.length; i++){
+            var catNode = this.catTab[i];
+            var tile = this.aStarMap.getTileByPosition(catNode.position);
+            if(!tile.last){
+                cc.log("猫咪不可抵达出入口");
+                return false;
+            }
+        }
+        return true;
     }
 });
-
 module.export = FloorLayer;

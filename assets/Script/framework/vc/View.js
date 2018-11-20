@@ -18,11 +18,12 @@ var View = cc.Class({
     //Override
     onLoad: function(){
         this.node.setContentSize(cc.winSize);
+        this.initUi();
     },
 
     //Override
     start: function () {
-        this.initUi();
+
     },
 
     //Override

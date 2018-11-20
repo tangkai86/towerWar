@@ -12,7 +12,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Sprite_npc_1",
+    "_name": "Sprite_player_employ",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -21,10 +21,13 @@
     "_components": [
       {
         "__id__": 2
+      },
+      {
+        "__id__": 3
       }
     ],
     "_prefab": {
-      "__id__": 3
+      "__id__": 4
     },
     "_id": "",
     "_opacity": 255,
@@ -52,8 +55,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": 47,
-      "y": 51
+      "x": 500,
+      "y": 423
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -89,6 +92,18 @@
     "_atlas": {
       "__uuid__": "8c083c79-ac6a-4f2c-b6dc-b080401738af"
     }
+  },
+  {
+    "__type__": "62e5a9aImdNr4IQ/FgVlAlx",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_className": "PlayerEmploy",
+    "level": 1,
+    "moveSpeed": 200
   },
   {
     "__type__": "cc.PrefabInfo",
