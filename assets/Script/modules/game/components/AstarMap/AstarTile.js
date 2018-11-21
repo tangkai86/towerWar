@@ -41,8 +41,15 @@ var AstarTile = cc.Class({
             default: [],
             type: cc.Node
         },
+        //格子里的设备投影
+        equipShadowGroup: {
+            default: [],
+            type: cc.Node
+        },
 
-        debugColor: cc.color(119, 119, 119, 255)
+        debugColor: cc.color(119, 119, 119),
+        enableColor: cc.color(0, 250, 0),
+        disenableColor: cc.color(250, 0, 0)
     },
 
     //初始化瓦片数据
@@ -107,23 +114,84 @@ var AstarTile = cc.Class({
     },
 
     //增加行人
-    addPeople: function(people){
-        this.playerGroup.push(people);
+    addPeople: function(peopleNode){
+        this.playerGroup.push(peopleNode);
+
+        //改变enable着色
+        if(this.equipShadowGroup.length > 0){
+            this.showEnableDraw(this.disenableColor);
+        }
     },
 
     //移除行人
-    removePeople: function(people){
+    removePeople: function(peopleNode){
         for(var i=this.playerGroup.length-1; i>=0; i--){
-            if(this.playerGroup[i] === people){
+            if(this.playerGroup[i] === peopleNode){
                 this.playerGroup.splice(i,1);
                 //cc.log("瓦片:"+this.position+"行人数:"+this.playerGroup.length);
             }
+        }
+
+        //改变enable着色
+        if(this.playerGroup.length <= 0 && this.equipShadowGroup.length > 0){
+            this.showEnableDraw(this.enableColor);
         }
     },
 
     //获取行人
     getPeople: function(){
         return this.playerGroup;
+    },
+
+    //增加设备投影
+    addEquipShadow: function(equipNode){
+        this.equipShadowGroup.push(equipNode);
+
+        //显示enable着色
+        if(this.isCanPlaced()){
+            this.showEnableDraw(this.enableColor);
+        }else {
+            this.showEnableDraw(this.disenableColor);
+        }
+    },
+
+    //移除设备投影
+    removeEquipShadow: function(equipNode){
+        for(var i=this.equipShadowGroup.length-1; i>=0; i--){
+            if(this.equipShadowGroup[i] === equipNode){
+                this.equipShadowGroup.splice(i,1);
+                //cc.log("瓦片:"+this.position+"设备投影数:"+this.equipShadowGroup.length);
+            }
+        }
+        //隐藏enalbe着色
+        if(this.equipShadowGroup.length <= 0){
+            this.hideEnableDraw();
+        }
+    },
+
+    showEnableDraw: function(color){
+        var enableColor = color || this.enableColor;
+        //背景
+        if(!this.enableColorLayer){
+            this.enableColorLayer = new cc.Node();
+            var spr = this.enableColorLayer.addComponent(cc.Sprite);
+            spr.type = cc.Sprite.Type.SLICED;
+            spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalSprite9_2, cc.SpriteFrame);
+            this.enableColorLayer.parent = this.map;
+            this.enableColorLayer.zIndex = 0.2;
+            this.enableColorLayer.setContentSize(this.tileSize);
+        }
+        var posX = (this.position.x + 0.5) * this.tileSize.width;
+        var posY = (this.position.y + 0.5) * this.tileSize.height;
+        this.enableColorLayer.position = cc.v2(posX, posY);
+        this.enableColorLayer.active = true;
+        this.enableColorLayer.color = enableColor;
+    },
+
+    hideEnableDraw: function(){
+        if(this.enableColorLayer){
+            this.enableColorLayer.active = false;
+        }
     },
 
     showDebugDraw: function(color) {
@@ -135,7 +203,7 @@ var AstarTile = cc.Class({
             spr.type = cc.Sprite.Type.SLICED;
             spr.spriteFrame = cc.loader.getRes(GameRes.pngGlobalSprite9_2, cc.SpriteFrame);
             this.bgColorLayer.parent = this.map;
-            this.bgColorLayer.zIndex = 1;
+            this.bgColorLayer.zIndex = 0.1;
             this.bgColorLayer.setContentSize(this.tileSize);
         }
         var posX = (this.position.x + 0.5) * this.tileSize.width;

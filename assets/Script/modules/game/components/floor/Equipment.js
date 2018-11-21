@@ -9,6 +9,11 @@ var Equipment = cc.Class({
         },
         _placed: false,  //是否已放置
     },
+
+    onLoad (){
+        this.equipPos = cc.v2(0,0); //设备所处的位置
+        this.tileTab = []; //设备投影所占据的瓦片
+    },
     
     start () {
         this.initTouchEvent(); //点击事件
@@ -33,15 +38,24 @@ var Equipment = cc.Class({
             let touchPos = event.touch.getLocation();
             let location = self.node.parent.convertToNodeSpaceAR(touchPos);
             self.node.setPosition(location);
+
+            let equipPosition = self.getEquipPosition();
+            let equipPos = self.aStarMap.getTilePosByPosition(equipPosition);
+            if(equipPos !== self.equipPos){
+                //更新设备位置
+                self.equipPos = equipPos;
+                //更新设备投影
+                self.updateEquipShadow();
+            }
         }, self.node);
         self.node.on(cc.Node.EventType.TOUCH_END, function (event) {
             let touchPos = event.touch.getLocation();
             let location = self.node.parent.convertToNodeSpaceAR(touchPos);
             self.setEquipPosition(location);
             //放置设备
-            if(self.checkEquipPlace()){
-                self.placeEquip();
-            }
+            // if(self.checkEquipPlace()){
+            //     self.placeEquip();
+            // }
             touchStart = false;
         }, self.node);
         self.node.on(cc.Node.EventType.TOUCH_CANCEL, function (event) {
@@ -49,9 +63,9 @@ var Equipment = cc.Class({
             let location = self.node.parent.convertToNodeSpaceAR(touchPos);
             self.setEquipPosition(location);
             //放置设备
-            if(self.checkEquipPlace()){
-                self.placeEquip();
-            }
+            // if(self.checkEquipPlace()){
+            //     self.placeEquip();
+            // }
             touchStart = false;
         }, self.node);
     },
@@ -61,7 +75,7 @@ var Equipment = cc.Class({
         this.aStarMap = this.node.parent.getComponent("AstarMap");
 
         //初始设备信息
-        var equipPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
+        let equipPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
         this.setEquipPosition(equipPosition);
         this.node.opacity = 128;
 
@@ -76,26 +90,26 @@ var Equipment = cc.Class({
         if(this._placed) return false;
         let canPlace = true;
         //检查瓦片是否可放置
-        let equipPosition = cc.v2(this.node.position.x - this.node.getContentSize().width/2, this.node.position.y - this.node.getContentSize().height/2);
-        let equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
-        for(let i=0; i<this.placeTile.x; i++){
-            for(let j=0; j<this.placeTile.y; j++){
-                canPlace = this.aStarMap.isTileCanPlaced(cc.v2(equipPos.x + i, equipPos.y + j));
-                if(!canPlace){
-                    cc.log("瓦片不可放置:"+"x:"+(equipPos.x+i)+ " y:"+(equipPos.y + j));
-                    return canPlace;
-                }
+        let equipTiles = this.getEquipTiles();
+        for(let i=0; i<equipTiles.length; i++){
+            let tile = equipTiles[i];
+            canPlace = tile.isCanPlaced();
+            if(!canPlace){
+                cc.log("瓦片不可放置:"+"x:"+(tile.position.x)+ " y:"+(tile.position.y));
+                return canPlace;
             }
         }
 
         //放置设备
         this.node.opacity = 255;
         this._placed = true;
-        for(let i=0; i<this.placeTile.x; i++){
-            for(let j=0; j<this.placeTile.y; j++){
-                this.aStarMap.addTileBarrier(cc.v2(equipPos.x + i, equipPos.y + j));
-            }
+        for(let i=0; i<equipTiles.length; i++){
+            let tile = equipTiles[i];
+            tile.addBarrier() //瓦片增加地形
         }
+
+        //更新设备投影
+        this.updateEquipShadow();
         return canPlace;
     },
 
@@ -104,13 +118,32 @@ var Equipment = cc.Class({
         if(!this._placed) return;
         this._placed = false;
         this.node.opacity = 128;
+
+        //移除设备地形
+        let equipTiles = this.getEquipTiles();
+        for(let i=0; i<equipTiles.length; i++){
+            let tile = equipTiles[i];
+            tile.removeBarrier(); //瓦片移除地形
+        }
+
+        //更新设备投影
+        this.updateEquipShadow();
+    },
+
+    //获取设备瓦片
+    getEquipTiles: function(){
+        let equipTiles = [];
         let equipPosition = this.getEquipPosition();
         let equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
         for(let i=0; i<this.placeTile.x; i++){
             for(let j=0; j<this.placeTile.y; j++){
-                this.aStarMap.removeTileBarrier(cc.v2(equipPos.x + i, equipPos.y + j));
+                var tile = this.aStarMap.getTileByPos(cc.v2(equipPos.x + i, equipPos.y + j));
+                if(tile){
+                    equipTiles.push(tile);
+                }
             }
         }
+        return equipTiles;
     },
 
     //检查设备是否可放置
@@ -128,10 +161,10 @@ var Equipment = cc.Class({
 
     //检查设备是否可使用
     checkEquipUsefull: function () {
-        var usefull = false;
-        var equipBordersPos = this.getEquipBordersPos();
-        for(var i=0; i<equipBordersPos.length; i++){
-            var tile = this.aStarMap.getTileByPos(equipBordersPos[i]);
+        let usefull = false;
+        let equipBordersPos = this.getEquipBordersPos(); //获取设备周边瓦片Pos
+        for(let i=0; i<equipBordersPos.length; i++){
+            let tile = this.aStarMap.getTileByPos(equipBordersPos[i]);
             if(tile && tile.last){
                 usefull = true;
                 break;
@@ -181,22 +214,48 @@ var Equipment = cc.Class({
 
     //设置设备位置
     setEquipPosition: function (position) {
-        var posx = position.x - this.node.getContentSize().width/2;
-        var posy = position.y - this.node.getContentSize().height/2;
-        var equipPos = this.aStarMap.getTilePosByPosition(cc.v2(posx, posy));
+        let posx = position.x - this.node.getContentSize().width/2;
+        let posy = position.y - this.node.getContentSize().height/2;
+        let equipPos = this.aStarMap.getTilePosByPosition(cc.v2(posx, posy));
         if(equipPos.x <0) equipPos.x = 0;
         if(equipPos.x >this.aStarMap.horTiles-this.placeTile.x) equipPos.x = this.aStarMap.horTiles-this.placeTile.x;
         if(equipPos.y <0) equipPos.y = 0;
         if(equipPos.y >this.aStarMap.verTiles-this.placeTile.y) equipPos.y = this.aStarMap.verTiles-this.placeTile.y;
-        var tilePosition = this.aStarMap.getPositionByTilePos(equipPos);
-        var equipPositionX = tilePosition.x  + this.node.getContentSize().width/2;
-        var equipPositionY = tilePosition.y  + this.node.getContentSize().height/2;
+        let tilePosition = this.aStarMap.getPositionByTilePos(equipPos);
+        let equipPositionX = tilePosition.x  + this.node.getContentSize().width/2;
+        let equipPositionY = tilePosition.y  + this.node.getContentSize().height/2;
         this.node.setPosition(cc.v2(equipPositionX, equipPositionY));
+
+        if(equipPos !== this.equipPos){
+            //更新设备位置
+            this.equipPos = equipPos;
+            //更新设备投影
+            this.updateEquipShadow();
+        }
+    },
+
+    //更新设备投影
+    updateEquipShadow: function(){
+        //移除设备投影
+        while (this.tileTab.length > 0) {
+            let tile = this.tileTab.pop();
+            tile.removeEquipShadow(this.node);
+        }
+
+        //增加设备投影
+        if(!this._placed){
+            let equipTiles = this.getEquipTiles();
+            for(let i=0; i<equipTiles.length; i++){
+                let tile = equipTiles[i];
+                tile.addEquipShadow(this.node);
+                this.tileTab.push(tile);
+            }
+        }
     },
     
     //获取设备位置: 设备左下角坐标
     getEquipPosition: function () {
-        var equipPosition = cc.v2(this.node.position.x - this.node.getContentSize().width/2, this.node.position.y - this.node.getContentSize().height/2);
+        let equipPosition = cc.v2(this.node.position.x - this.node.getContentSize().width/2, this.node.position.y - this.node.getContentSize().height/2);
         return equipPosition;
     }
 });
