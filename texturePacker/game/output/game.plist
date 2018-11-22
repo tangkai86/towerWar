@@ -4,6 +4,36 @@
     <dict>
         <key>frames</key>
         <dict>
+            <key>game_bgBackDoor.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{750,160}</string>
+                <key>spriteSourceSize</key>
+                <string>{750,160}</string>
+                <key>textureRect</key>
+                <string>{{0,583},{750,160}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>game_bgDoor.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{750,396}</string>
+                <key>spriteSourceSize</key>
+                <string>{750,396}</string>
+                <key>textureRect</key>
+                <string>{{0,187},{750,396}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
             <key>game_equipBath.png</key>
             <dict>
                 <key>aliases</key>
@@ -15,7 +45,7 @@
                 <key>spriteSourceSize</key>
                 <string>{182,184}</string>
                 <key>textureRect</key>
-                <string>{{0,106},{182,184}}</string>
+                <string>{{389,0},{182,184}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -45,7 +75,7 @@
                 <key>spriteSourceSize</key>
                 <string>{188,187}</string>
                 <key>textureRect</key>
-                <string>{{0,290},{188,187}}</string>
+                <string>{{571,0},{188,187}}</string>
                 <key>textureRotated</key>
                 <false/>
             </dict>
@@ -64,6 +94,36 @@
                 <key>textureRotated</key>
                 <false/>
             </dict>
+            <key>game_playerCat.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{124,94}</string>
+                <key>spriteSourceSize</key>
+                <string>{124,94}</string>
+                <key>textureRect</key>
+                <string>{{265,0},{124,94}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
+            <key>game_playerEmploy.png</key>
+            <dict>
+                <key>aliases</key>
+                <array/>
+                <key>spriteOffset</key>
+                <string>{0,0}</string>
+                <key>spriteSize</key>
+                <string>{114,150}</string>
+                <key>spriteSourceSize</key>
+                <string>{114,150}</string>
+                <key>textureRect</key>
+                <string>{{151,0},{114,150}}</string>
+                <key>textureRotated</key>
+                <false/>
+            </dict>
         </dict>
         <key>metadata</key>
         <dict>
@@ -76,9 +136,9 @@
             <key>realTextureFileName</key>
             <string>game.png</string>
             <key>size</key>
-            <string>{188,477}</string>
+            <string>{759,743}</string>
             <key>smartupdate</key>
-            <string>$TexturePacker:SmartUpdate:2bcc0047a7b5c147a199f7102d333855:3b0f67268bcef62fb217c8a9dfddf18b:b2cae276934292945ac49b6ea6cfb4fe$</string>
+            <string>$TexturePacker:SmartUpdate:22d6343936a640cc16aedae332ca1edf:7bacfc8279e4215eb3095a9743e3903a:b2cae276934292945ac49b6ea6cfb4fe$</string>
             <key>textureFileName</key>
             <string>game.png</string>
         </dict>

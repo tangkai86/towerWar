@@ -29,7 +29,8 @@ GameRes.prefabGameScence = prefix + "ui/game/GameScence";
 GameRes.prefabFloor = prefix + "ui/game/room/Panel_floor";  //地板
 GameRes.prefabEquipBath = prefix + "ui/game/equip/Sprite_equipBath";    //浴盆
 GameRes.prefabEquipLadder = prefix + "ui/game/equip/Sprite_equipLadder"; //玩具爬梯
-GameRes.prefabPlayerEmploy = prefix + "ui/game/player/Sprite_player_employ"; //店员
+GameRes.prefabPlayerEmploy = prefix + "ui/game/player/Sprite_playerEmploy"; //店员
+GameRes.prefabPlayerCat = prefix + "ui/game/player/Sprite_playerCat"; //猫咪
 
 //活动界面
 GameRes.prefabActivityView = prefix + "ui/activity/ActivityView";

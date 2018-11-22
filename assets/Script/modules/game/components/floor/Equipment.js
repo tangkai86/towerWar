@@ -20,7 +20,7 @@ var Equipment = cc.Class({
     },
 
     update: function(dt){
-        this.node.zIndex = 2000 - this.node.position.y;
+        this.node.zIndex = 1000 - this.node.position.y;
         if(!this._placed){
             this.node.zIndex = this.node.zIndex + 10000;
         }
@@ -53,9 +53,9 @@ var Equipment = cc.Class({
             let location = self.node.parent.convertToNodeSpaceAR(touchPos);
             self.setEquipPosition(location);
             //放置设备
-            // if(self.checkEquipPlace()){
-            //     self.placeEquip();
-            // }
+            if(self.checkEquipPlace()){
+                self.placeEquip();
+            }
             touchStart = false;
         }, self.node);
         self.node.on(cc.Node.EventType.TOUCH_CANCEL, function (event) {
@@ -63,9 +63,9 @@ var Equipment = cc.Class({
             let location = self.node.parent.convertToNodeSpaceAR(touchPos);
             self.setEquipPosition(location);
             //放置设备
-            // if(self.checkEquipPlace()){
-            //     self.placeEquip();
-            // }
+            if(self.checkEquipPlace()){
+                self.placeEquip();
+            }
             touchStart = false;
         }, self.node);
     },
@@ -137,7 +137,7 @@ var Equipment = cc.Class({
         let equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
         for(let i=0; i<this.placeTile.x; i++){
             for(let j=0; j<this.placeTile.y; j++){
-                var tile = this.aStarMap.getTileByPos(cc.v2(equipPos.x + i, equipPos.y + j));
+                let tile = this.aStarMap.getTileByPos(cc.v2(equipPos.x + i, equipPos.y + j));
                 if(tile){
                     equipTiles.push(tile);
                 }
@@ -148,7 +148,7 @@ var Equipment = cc.Class({
 
     //检查设备是否可放置
     checkEquipPlace: function(){
-        var floorLayer = this.node.parent.getComponent("FloorLayer");
+        let floorLayer = this.node.parent.getComponent("FloorLayer");
         //放置设备
         let canPlace = this.placeEquip();
         if(!canPlace) return false;
@@ -176,13 +176,13 @@ var Equipment = cc.Class({
 
     //获取设备周边瓦片pos
     getEquipBordersPos: function () {
-        var equipBorders = [];
-        var equipPosition = this.getEquipPosition();
-        var equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
-        for(var i=0; i<this.placeTile.x; i++){
-            for(var j=0; j<this.placeTile.y; j++){
-                var tileBorders = this.getTileBordersPos(cc.v2(equipPos.x + i, equipPos.y + j));
-                for(var k=0; k<tileBorders.length; k++){
+        let equipBorders = [];
+        let equipPosition = this.getEquipPosition();
+        let equipPos = this.aStarMap.getTilePosByPosition(equipPosition);
+        for(let i=0; i<this.placeTile.x; i++){
+            for(let j=0; j<this.placeTile.y; j++){
+                let tileBorders = this.getTileBordersPos(cc.v2(equipPos.x + i, equipPos.y + j));
+                for(let k=0; k<tileBorders.length; k++){
                     equipBorders.push(tileBorders[k])
                 }
             }
@@ -192,7 +192,7 @@ var Equipment = cc.Class({
 
     //获取瓦片周边瓦片
     getTileBordersPos: function(pos) {
-        var borders = [];
+        let borders = [];
 
         // top
         let top = cc.v2(pos.x, pos.y + 1);

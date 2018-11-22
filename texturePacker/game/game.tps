@@ -187,6 +187,32 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">res/game_bgBackDoor.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>188,40,375,80</rect>
+                <key>scale9Paddings</key>
+                <rect>188,40,375,80</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">res/game_bgDoor.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>188,99,375,198</rect>
+                <key>scale9Paddings</key>
+                <rect>188,99,375,198</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">res/game_equipBath.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
@@ -236,6 +262,32 @@
                 <rect>15,18,30,37</rect>
                 <key>scale9Paddings</key>
                 <rect>15,18,30,37</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">res/game_playerCat.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>31,24,62,47</rect>
+                <key>scale9Paddings</key>
+                <rect>31,24,62,47</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">res/game_playerEmploy.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>29,38,57,75</rect>
+                <key>scale9Paddings</key>
+                <rect>29,38,57,75</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>

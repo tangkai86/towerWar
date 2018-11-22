@@ -13,6 +13,8 @@ var FloorLayer = cc.Class({
         this.catTab = [];       //猫咪
 
         this.aStarMap = this.node.getComponent("AstarMap");
+
+        //楼层基本配置
         this.floorEnter = [cc.v2(3,0), cc.v2(4,0)];     //楼层入口
         this.floorExport = [cc.v2(3,7), cc.v2(4,7)];    //楼层出口
         //地形设置入口
