@@ -55,6 +55,10 @@ var GameView = cc.Class({
                         {level: 10, type: 1, x: 5, y: 5},
                         {level: 15, type: 1, x: 2, y: 2},
                         {level: 20, type: 1, x: 3, y: 3},
+                    ],
+                    cats: [
+                        {level: 10, type: 1, x: 5, y: 5},
+                        {level: 10, type: 1, x: 6, y: 6},
                     ]
                 }
             ],

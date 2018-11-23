@@ -69,6 +69,8 @@ var Player = cc.Class({
                 let nextTilePosition = self.aStarMap.getCenterByTilePos(nextTile.position);
                 let curTileBorder = curTilePosition.add(nextTilePosition.sub(curTilePosition).divSelf(2.1));
                 let moveTime = self.getMoveTime(self.node.position, curTileBorder);
+                //更新动画方向
+                self.updateFlip(curTile, nextTile);
                 self.node.runAction(cc.sequence(
                     cc.moveTo(moveTime, curTileBorder),
                     cc.callFunc(function () {
@@ -97,6 +99,15 @@ var Player = cc.Class({
             }
         };
         moveAction();
+    },
+
+    //更新动画方向
+    updateFlip: function(curTile, nextTile){
+        if(nextTile.position.x > curTile.position.x){
+            this.node.scaleX = 1;
+        }else if(nextTile.position.x < curTile.position.x) {
+            this.node.scaleX = -1;
+        }
     },
 
     //获取移动时间

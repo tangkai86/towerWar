@@ -10,7 +10,16 @@ var PlayerEmploy = cc.Class({
 
     start () {
         this._super();
-    }
+    },
+
+    //更新动画方向
+    updateFlip: function(curTile, nextTile){
+        if(nextTile.position.x > curTile.position.x){
+            this.node.scaleX = -1;
+        }else if(nextTile.position.x < curTile.position.x) {
+            this.node.scaleX = 1;
+        }
+    },
 });
 
 module.exports = PlayerEmploy;

@@ -1,7 +1,7 @@
+//楼层
 var EquipmentConfig = require("EquipmentConfig");
 var FloorLayer = cc.Class({
     extends: cc.Component,
-
     properties: {
 
     },
@@ -18,16 +18,16 @@ var FloorLayer = cc.Class({
         this.floorEnter = [cc.v2(3,0), cc.v2(4,0)];     //楼层入口
         this.floorExport = [cc.v2(3,7), cc.v2(4,7)];    //楼层出口
         //地形设置入口
-        for(var i=0; i<this.floorEnter.length; i++){
-            var enterPos = this.floorEnter[i];
-            var tile = this.aStarMap.getTileByPos(enterPos);
+        for(let i=0; i<this.floorEnter.length; i++){
+            let enterPos = this.floorEnter[i];
+            let tile = this.aStarMap.getTileByPos(enterPos);
             tile.setSpecialBarrier("enter");
             tile.showDebugDraw();
         }
         //地形设置出口
-        for(var i=0; i<this.floorExport.length; i++){
-            var exportPos = this.floorExport[i];
-            var tile = this.aStarMap.getTileByPos(exportPos);
+        for(let i=0; i<this.floorExport.length; i++){
+            let exportPos = this.floorExport[i];
+            let tile = this.aStarMap.getTileByPos(exportPos);
             tile.setSpecialBarrier("export");
             tile.showDebugDraw();
         }
@@ -86,7 +86,12 @@ var FloorLayer = cc.Class({
 
     //增加猫咪
     addPlayerCat: function(args){
-
+        var prefab = cc.loader.getRes(GameRes.prefabPlayerCat, cc.Prefab);
+        var catNode = cc.instantiate(prefab);
+        catNode.parent = this.node;
+        var playerCat = catNode.getComponent("PlayerCat");
+        playerCat.initPlayer(args);
+        this.catTab.push(catNode);
     },
 
     //增加顾客

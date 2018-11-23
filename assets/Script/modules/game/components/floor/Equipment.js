@@ -1,3 +1,4 @@
+//设备
 var Equipment = cc.Class({
     extends: cc.Component,
 
@@ -73,7 +74,7 @@ var Equipment = cc.Class({
     //初始化设备
     initEquip: function (args) {
         this.aStarMap = this.node.parent.getComponent("AstarMap");
-
+        this.equipType = args.type;
         //初始设备信息
         let equipPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
         this.setEquipPosition(equipPosition);
@@ -257,6 +258,11 @@ var Equipment = cc.Class({
     getEquipPosition: function () {
         let equipPosition = cc.v2(this.node.position.x - this.node.getContentSize().width/2, this.node.position.y - this.node.getContentSize().height/2);
         return equipPosition;
+    },
+
+    //获取设备类型
+    getEquipType: function () {
+        return this.equipType;
     }
 });
 
