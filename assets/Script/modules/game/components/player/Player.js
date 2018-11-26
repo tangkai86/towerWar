@@ -17,7 +17,7 @@ var Player = cc.Class({
     },
 
     update: function(dt){
-        this.node.zIndex = 2000 - this.node.position.y;
+        this.node.zIndex = 1000 - this.node.position.y;
     },
 
     initPlayer: function (args) {
