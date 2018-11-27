@@ -1,3 +1,4 @@
+
 var Player = cc.Class({
     extends: cc.Component,
     properties: {
@@ -13,7 +14,7 @@ var Player = cc.Class({
     },
 
     start () {
-        this.autoWalk();
+
     },
 
     update: function(dt){
@@ -24,10 +25,12 @@ var Player = cc.Class({
         this.aStarMap = this.node.parent.getComponent("AstarMap");
 
         //player位置
-        var playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
+        let playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
         this.node.setPosition(playerPosition);
-        var tile = this.aStarMap.getTileByPos(cc.v2(args.x, args.y));
+        let tile = this.aStarMap.getTileByPos(cc.v2(args.x, args.y));
         tile.addPeople(this.node);
+
+        this.autoWalk();
     },
 
     //自由移动

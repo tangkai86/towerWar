@@ -1,3 +1,10 @@
+//楼层子节点内存池
+var FloorNodePool = {
+    "Equipment": [],
+    "PlayerCat": [],
+    "PlayerEmploy": [],
+    "PlayerGuest": []
+};
 //楼层
 var EquipmentConfig = require("EquipmentConfig");
 var FloorLayer = cc.Class({
@@ -66,32 +73,94 @@ var FloorLayer = cc.Class({
 
     //增加设备
     addEquip: function (args) {
-        var prefab = cc.loader.getRes(EquipmentConfig.PREFAB[args.type], cc.Prefab);
-        var equipNode = cc.instantiate(prefab);
-        equipNode.parent = this.node;
-        var equipment = equipNode.getComponent("Equipment");
+        let equipName = "Equipment";
+        let equipNode;
+        if(!FloorNodePool[equipName] || FloorNodePool[equipName].length < 1){
+            let prefab = cc.loader.getRes(EquipmentConfig.PREFAB[args.type], cc.Prefab);
+            equipNode = cc.instantiate(prefab);
+            equipNode.parent = this.node;
+        }else {
+            equipNode = FloorNodePool[equipName].pop();
+            equipNode.active = true;
+        }
+        let equipment = equipNode.getComponent(equipName);
         equipment.initEquip(args);
         this.equipTab.push(equipNode);
+    },
+    //移除设备
+    removeEquip: function(node){
+        let equipName = "Equipment";
+        for(let i=0; i<this.equipTab.length; i++){
+            if(node === this.equipTab[i]){
+                this.equipTab.splice(i, 1);
+                break;
+            }
+        }
+        node.active = false;
+        FloorNodePool[equipName].push(node);
     },
 
     //增加店员
     addPlayerEmploy: function (args) {
-        var prefab = cc.loader.getRes(GameRes.prefabPlayerEmploy, cc.Prefab);
-        var employNode = cc.instantiate(prefab);
-        employNode.parent = this.node;
-        var playerEmploy = employNode.getComponent("PlayerEmploy");
-        playerEmploy.initPlayer(args);
+        let employName = "PlayerEmploy";
+        let employNode;
+        if(!FloorNodePool[employName] || FloorNodePool[employName].length < 1){
+            let prefab = cc.loader.getRes(GameRes.prefabPlayerEmploy, cc.Prefab);
+            employNode = cc.instantiate(prefab);
+            employNode.parent = this.node;
+        }else {
+            employNode = FloorNodePool[employName].pop();
+            employNode.active = true;
+        }
+        let equipment = employNode.getComponent(employName);
+        equipment.initPlayer(args);
         this.employTab.push(employNode);
+    },
+
+    //移除店员
+    removePlayerEmploy: function(node){
+        let employName = "PlayerEmploy";
+        for(let i=0; i<this.employTab.length; i++){
+            if(node === this.employTab[i]){
+                this.employTab.splice(i, 1);
+                break;
+            }
+        }
+        node.active = false;
+        FloorNodePool[employName].push(node);
     },
 
     //增加猫咪
     addPlayerCat: function(args){
-        var prefab = cc.loader.getRes(GameRes.prefabPlayerCat, cc.Prefab);
-        var catNode = cc.instantiate(prefab);
-        catNode.parent = this.node;
+        var catName = "PlayerCat";
+        var catNode;
+        if(!FloorNodePool[catName] || FloorNodePool[catName].length < 1){
+            var prefab = cc.loader.getRes(GameRes.prefabPlayerCat, cc.Prefab);
+            catNode = cc.instantiate(prefab);
+            catNode.parent = this.node;
+        }else {
+            catNode = FloorNodePool[catName].pop();
+            catNode.active = true;
+        }
         var playerCat = catNode.getComponent("PlayerCat");
         playerCat.initPlayer(args);
         this.catTab.push(catNode);
+    },
+
+    //移除猫咪
+    removePlayerCat: function(node){
+        let catName = "PlayerCat";
+        for(let i=0; i<this.catTab.length; i++){
+            if(node === this.catTab[i]){
+                this.catTab.splice(i, 1);
+                break;
+            }
+        }
+        node.active = false;
+        FloorNodePool[catName].push(node);
+        cc.log("当前猫咪数量:"+this.catTab.length + "内存池:"+FloorNodePool[catName].length);
+        //创建猫咪
+        this.addPlayerCat({level: 10, type: 1, x: 5, y: 5});
     },
 
     //增加顾客
@@ -159,7 +228,7 @@ var FloorLayer = cc.Class({
         for(let i=0; i<this.catTab.length; i++){
             var catNode = this.catTab[i];
             var tile = this.aStarMap.getTileByPosition(catNode.position);
-            if(!tile.last){
+            if(tile && !tile.last){
                 cc.log("猫咪不可抵达出入口");
                 return false;
             }
