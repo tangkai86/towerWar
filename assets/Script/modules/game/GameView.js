@@ -5,6 +5,7 @@
     Zero
 =======================================*/
 var RoomsManager = require("RoomsManager");
+var StreetManager = require("StreetManager");
 var View = require("View");
 var GameView = cc.Class({
     extends: View,
@@ -34,6 +35,11 @@ var GameView = cc.Class({
         //初始化房间
         var Panel_room = this.node.getChildByName("Panel_room");
         this.roomsManager = Panel_room.addComponent("RoomsManager");
+
+        // 初始化街道
+        var Panel_street = this.node.getChildByName("Panel_room");
+        var StreetMap = cc.find("Panel_street/StreetMap", this.node)
+        StreetMap.addComponent("StreetManager");
     },
 
     //玩家进入游戏
