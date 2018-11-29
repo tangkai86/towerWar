@@ -45,7 +45,6 @@ var PlayerStreet = cc.Class({
             // 最后一步
             var isLastStep = this.curStep == this.pathPointStep
             if (isLastStep){
-                cc.log("aaaaaaaaaaaaaaaaaaa", self.endInfo);
                 if (self.endInfo == null) {
                     return
                 };
