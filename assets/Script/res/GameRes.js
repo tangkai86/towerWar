@@ -2,6 +2,7 @@
 var GameRes = {};
 
 var prefix = "";
+GameRes.fontNormal = "Arial";
 
 //------------资源文件夹路径-------------
 GameRes.pathGlobalScence = prefix + "ui/global";   //公共资源

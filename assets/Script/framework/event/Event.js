@@ -26,4 +26,6 @@ ET.EVT_OPEN_VIEW_SHOP = getUID(); 	  //打开商城界面
 
 ET.EVT_OPEN_SCENCE_GAME = getUID();		//打开游戏界面
 
+ET.EVT_GLOBAL_TOAST = getUID();     //全局吐司提示
+
 module.exports = ET;

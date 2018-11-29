@@ -126,7 +126,8 @@ var FloorLayer = cc.Class({
                 break;
             }
         }
-        node.active = false;
+        var playerEmploy = node.getComponent(employName);
+        playerEmploy.remove();
         FloorNodePool[employName].push(node);
     },
 
@@ -142,7 +143,7 @@ var FloorLayer = cc.Class({
             catNode = FloorNodePool[catName].pop();
             catNode.active = true;
         }
-        var playerCat = catNode.getComponent("PlayerCat");
+        var playerCat = catNode.getComponent(catName);
         playerCat.initPlayer(args);
         this.catTab.push(catNode);
     },
@@ -156,7 +157,8 @@ var FloorLayer = cc.Class({
                 break;
             }
         }
-        node.active = false;
+        let playerCat = node.getComponent(catName);
+        playerCat.remove();
         FloorNodePool[catName].push(node);
         cc.log("当前猫咪数量:"+this.catTab.length + "内存池:"+FloorNodePool[catName].length);
         //创建猫咪

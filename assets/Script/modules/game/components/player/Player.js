@@ -118,6 +118,13 @@ var Player = cc.Class({
         let distance = startPos.sub(endPos);
         let time = Math.sqrt(distance.x*distance.x + distance.y*distance.y)/this.moveSpeed;
         return time;
+    },
+    
+    //移除
+    remove: function () {
+        let tile = this.aStarMap.getTileByPosition(this.node.position);
+        tile.removePeople(this.node);
+        this.node.active = false;
     }
 });
 

@@ -263,6 +263,11 @@ var Equipment = cc.Class({
     //获取设备类型
     getEquipType: function () {
         return this.equipType;
+    },
+    
+    //使用设备
+    useEquip: function () {
+        cc.log("使用设备");
     }
 });
 

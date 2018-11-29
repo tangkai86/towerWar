@@ -22,6 +22,9 @@ var GlobalController = cc.Class({
     initGlobalEvent: function () {
         gm.event.addEvent(ET.EVT_OPEN_SCENCE_GLOBAL, this.openView.bind(this));
         gm.event.addEvent(ET.EVT_OPEN_VIEW_COMMONTIP, this.openCommonTipView.bind(this));
+
+        //全局toast提示
+        gm.event.addEvent(ET.EVT_GLOBAL_TOAST, this.showToast.bind(this));
     },
 
     //注册模块监听事件
@@ -56,6 +59,11 @@ var GlobalController = cc.Class({
         var handler = gm.pm.push(commonTipView);
         self.commonTipHandler = handler;
         gm.pm.pop();
+    },
+    
+    //全局吐司
+    showToast: function (args) {
+        
     }
 });
 
