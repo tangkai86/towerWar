@@ -12,6 +12,9 @@ var Player = cc.Class({
             type: cc.Integer
         },
     },
+    onLoad () {
+
+    },
 
     start () {
 

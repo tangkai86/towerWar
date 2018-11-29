@@ -30,11 +30,11 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 15
+        "__id__": 18
       }
     ],
     "_prefab": {
-      "__id__": 16
+      "__id__": 19
     },
     "_id": "",
     "_opacity": 255,
@@ -293,17 +293,20 @@
     "_children": [
       {
         "__id__": 10
+      },
+      {
+        "__id__": 13
       }
     ],
     "_tag": -1,
     "_active": true,
     "_components": [
       {
-        "__id__": 13
+        "__id__": 16
       }
     ],
     "_prefab": {
-      "__id__": 14
+      "__id__": 17
     },
     "_id": "",
     "_opacity": 255,
@@ -386,7 +389,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 23
+      "y": 0
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -432,6 +435,99 @@
       "__uuid__": "e7ce418b-297a-482f-946a-f1a360a1086b"
     },
     "fileId": "0epIJrYIxC856oSrcHQgdZ",
+    "sync": false
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "StreetMap",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 9
+    },
+    "_children": [],
+    "_tag": -1,
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 14
+      }
+    ],
+    "_prefab": {
+      "__id__": 15
+    },
+    "_id": "",
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_cascadeOpacityEnabled": true,
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_rotationX": 0,
+    "_rotationY": 0,
+    "_scaleX": 1,
+    "_scaleY": 1,
+    "_position": {
+      "__type__": "cc.Vec2",
+      "x": -374,
+      "y": -119
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_localZOrder": 0,
+    "_globalZOrder": 0,
+    "_opacityModifyRGB": false,
+    "groupIndex": 0
+  },
+  {
+    "__type__": "4a866nP+axP469aRlelNf1f",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 13
+    },
+    "_enabled": true,
+    "horTiles": 8,
+    "verTiles": 2,
+    "tileSize": {
+      "__type__": "cc.Size",
+      "width": 94,
+      "height": 94
+    },
+    "moveType": 0,
+    "stepOfDuration": 0.2,
+    "enabledDebugDraw": true,
+    "_astarGroup": [],
+    "but": [
+      "1,0",
+      "1,1",
+      "1,2",
+      "1,5",
+      "1,6",
+      "1,7"
+    ]
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__uuid__": "e7ce418b-297a-482f-946a-f1a360a1086b"
+    },
+    "fileId": "24/1SBP3RD+Z+XP1v5Wmz1",
     "sync": false
   },
   {
