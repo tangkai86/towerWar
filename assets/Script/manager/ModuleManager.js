@@ -6,6 +6,13 @@ var LoadingController = require("LoadingController");
 var MainController = require("MainController");
 var GameController = require("GameController");
 var ActivityController = require("ActivityController");
+
+var BookViewController = require("BookViewController");
+var EmployeeController = require("EmployeeController");
+var EquipController = require("EquipController");
+var PetController = require("PetController");
+var ToolController = require("ToolController");
+
 var ModuleManager = cc.Class({
     properties: {
         _className: "ModuleManager",
@@ -39,6 +46,26 @@ var ModuleManager = cc.Class({
         //活动界面
         var activity = new ActivityController();
         self._modules.activity = activity;
+
+        //图鉴界面
+        var book = new BookViewController();
+        self._modules.book = book;
+
+        //员工界面
+        var employee = new EmployeeController();
+        self._modules.employee = employee;
+
+        //设备界面
+        var equip = new EquipController();
+        self._modules.equip = equip;
+
+        //宠物界面
+        var pet = new PetController();
+        self._modules.pet = pet;
+
+        //道具界面
+        var tool = new ToolController();
+        self._modules.tool = tool;
 	},
 
     clean: function (args) {
