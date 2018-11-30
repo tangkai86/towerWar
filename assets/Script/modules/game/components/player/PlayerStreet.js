@@ -69,7 +69,6 @@ var PlayerStreet = cc.Class({
     },
 
     setEndInfo:function (endInfo) {
-        cc.log(">>>>>>>>>>>>>>>>>>>>>" + endInfo);
         this.endInfo = endInfo;
     },
 });

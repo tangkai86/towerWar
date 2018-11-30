@@ -16,13 +16,19 @@ ET.NET_CONNECT_RSP = getUID();
 ET.NET_LOGIN_REQ = getUID();
 ET.NET_LOGIN_RSP = getUID();
 
-ET.EVT_OPEN_SCENCE_GLOBAL = getUID(); //打开global界面
-ET.EVT_OPEN_VIEW_COMMONTIP = getUID();//打开公共提示界面
-ET.EVT_OPEN_SCENCE_LOADING = getUID();//打开loading界面
-ET.EVT_CLOSE_SCENCE_LOADING = getUID();//关闭loading界面
-ET.EVT_OPEN_SCENCE_MAIN = getUID();	  //打开主界面
-ET.EVT_OPEN_VIEW_ACTIVITY = getUID(); //打开活动界面
-ET.EVT_OPEN_VIEW_SHOP = getUID(); 	  //打开商城界面
+ET.EVT_OPEN_SCENCE_GLOBAL = getUID(); 	//打开global界面
+ET.EVT_OPEN_VIEW_COMMONTIP = getUID();	//打开公共提示界面
+ET.EVT_OPEN_SCENCE_LOADING = getUID();	//打开loading界面
+ET.EVT_CLOSE_SCENCE_LOADING = getUID();	//关闭loading界面
+ET.EVT_OPEN_SCENCE_MAIN = getUID();	  	//打开主界面
+ET.EVT_OPEN_VIEW_ACTIVITY = getUID(); 	//打开活动界面
+ET.EVT_OPEN_VIEW_SHOP = getUID(); 	  	//打开商城界面
+
+ET.EVT_OPEN_VIEW_BOOK = getUID(); 	  	//打开图鉴界面
+ET.EVT_OPEN_VIEW_EMPLOYEE = getUID(); 	//打开员工界面
+ET.EVT_OPEN_VIEW_EQUIP = getUID(); 		//打开设备界面
+ET.EVT_OPEN_VIEW_PET = getUID(); 		//打开宠物界面
+ET.EVT_OPEN_VIEW_TOOL = getUID(); 		//打开道具界面
 
 ET.EVT_OPEN_SCENCE_GAME = getUID();		//打开游戏界面
 

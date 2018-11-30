@@ -14,6 +14,26 @@ var GameView = cc.Class({
             default: "GameView",
             override: true
         },
+
+        roleNameLable: {
+        	default: null,
+        	type: cc.Node
+        },
+
+        diamondLable: {
+        	default: null,
+        	type: cc.Node
+        },
+
+        goldLable: {
+        	default: null,
+        	type: cc.Node
+        },
+
+        catLable: {
+        	default: null,
+        	type: cc.Node
+        },
     },
     ctor: function () {
 
@@ -40,6 +60,20 @@ var GameView = cc.Class({
         var Panel_street = this.node.getChildByName("Panel_room");
         var StreetMap = cc.find("Panel_street/StreetMap", this.node)
         StreetMap.addComponent("StreetManager");
+
+        this.viewList = [];
+        
+        this.viewList["ToolView"] = ET.EVT_OPEN_VIEW_TOOL;
+        this.viewList["PetView"] = ET.EVT_OPEN_VIEW_PET;
+        this.viewList["EquipView"] = ET.EVT_OPEN_VIEW_EQUIP;
+        this.viewList["EmployeeView"] = ET.EVT_OPEN_VIEW_EMPLOYEE;
+        this.viewList["BookView"] = ET.EVT_OPEN_VIEW_BOOK;
+
+        // 文本设置
+        this.roleNameString = this.roleNameLable.getComponent(cc.Label);
+        this.diamondString = this.diamondLable.getComponent(cc.Label);
+        this.goldString = this.goldLable.getComponent(cc.Label);
+        this.catString = this.catLable.getComponent(cc.Label);
     },
 
     //玩家进入游戏
@@ -75,12 +109,33 @@ var GameView = cc.Class({
         for(var i=0; i<user.floors.length; i++){
             this.roomsManager.initRoom(user);
         }
+
+        this.flushData()
+    },
+
+    flushData: function () {
+    	this.roleNameString.string = "大帅哥";
+    	this.diamondString.string = 100;
+    	this.goldString.string = 300;
+    	this.catString.string = 500;
     },
 
     clickEvent: function(event, customEventData) {
         this._super(event, customEventData);
-        
-    }
+    },
+
+    clickRoleHead: function(event, customEventData) {
+    	cc.log("点击人物头像");
+    },
+
+    clickBottomButton: function(event, customEventData) {
+    	if (this.viewList[customEventData] == null) {
+    		cc.log("viewList 没有定义:", customEventData);
+    		return
+    	};
+
+    	gm.event.dispatchEvent(this.viewList[customEventData]);
+    },
 });
 
 module.exports = GameView;
