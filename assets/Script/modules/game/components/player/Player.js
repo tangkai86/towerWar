@@ -26,7 +26,6 @@ var Player = cc.Class({
 
     initPlayer: function (args) {
         this.aStarMap = this.node.parent.getComponent("AstarMap");
-
         //player位置
         let playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
         this.node.setPosition(playerPosition);
@@ -39,13 +38,24 @@ var Player = cc.Class({
     //自由移动
     autoWalk: function () {
         var self = this;
-        var tileX = Math.floor(Math.random()*this.aStarMap.horTiles);
-        var tileY = Math.floor(Math.random()*this.aStarMap.verTiles);
-        this.moveToTile(cc.v2(tileX, tileY), function () {
+        this.moveToTile(self.getRandomPos(), function () {
             setTimeout(function () {
                 self.autoWalk();
             }, 1000);
         })
+    },
+
+    //获取随机位置
+    getRandomPos: function(){
+        var tileX = Util.getRandom(0, this.aStarMap.horTiles-1);
+        var tileY = Util.getRandom(0, this.aStarMap.verTiles-1);
+        var randomPos = cc.v2(tileX,tileY);
+        var tile = this.aStarMap.getTileByPos(randomPos);
+        if(tile.isCanCross()){
+            return randomPos;
+        }else {
+            return this.getRandomPos();
+        }
     },
 
     //移动到瓦片
@@ -57,7 +67,9 @@ var Player = cc.Class({
 
         //无路可走
         if (movePathTiles.length <= 1) {
-            cc.log('cannot find path');
+            if(movePathTiles.length <= 0){
+                cc.log('cannot find path:');
+            }
             if(moveCb) moveCb();
             return;
         }

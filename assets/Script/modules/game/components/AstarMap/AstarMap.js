@@ -107,7 +107,7 @@ var AstarMap = cc.Class({
 
         this._paths = this.getMovePathTiles(start, finish);
         if (this._paths.length < 1) {
-            cc.log('cannot find path');
+            cc.log('cannot find path:'+finish.x + " :" + finish.y);
             return;
         }
 

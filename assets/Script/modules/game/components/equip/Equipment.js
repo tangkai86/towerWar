@@ -17,7 +17,7 @@ var Equipment = cc.Class({
     },
     
     start () {
-        this.initTouchEvent(); //点击事件
+        //this.initTouchEvent(); //点击事件
     },
 
     update: function(dt){
@@ -34,6 +34,7 @@ var Equipment = cc.Class({
         self.node.on(cc.Node.EventType.TOUCH_START, function (event) {
             touchStart = true;
             self.packUpEquip();
+            event.stopPropagation();
         }, self.node);
         self.node.on(cc.Node.EventType.TOUCH_MOVE, function (event) {
             let touchPos = event.touch.getLocation();

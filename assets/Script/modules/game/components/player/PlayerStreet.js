@@ -3,7 +3,7 @@ var PlayerStreet = cc.Class({
     extends: Player,
     properties: {
         _className: {
-            default: "PlayerEmploy",
+            default: "PlayerStreet",
             override: true
         }
     },

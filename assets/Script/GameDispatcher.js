@@ -17,6 +17,7 @@ var MusicPlayer = require("MusicPlayer");
 window.i18n = require('LanguageData');      //多国语言
 window.SK = require("StorageKey");          //本地存档key
 window.UtilAction = require("UtilAction"); //公共动作方法
+window.Util = require("Util");               //公共方法
 window.ET = require("Event");                //游戏内的事件
 window.GameRes = require("GameRes");        //游戏资源
 window.gm = {};     //gm游戏管理器

@@ -4,8 +4,7 @@
     2018/11/12
     Zero
 =======================================*/
-var RoomsManager = require("RoomsManager");
-var StreetManager = require("StreetManager");
+var ShopManager = require("ShopManager");
 var View = require("View");
 var GameView = cc.Class({
     extends: View,
@@ -33,13 +32,7 @@ var GameView = cc.Class({
     //初始化Ui
     initUi: function () {
         //初始化房间
-        var Panel_room = this.node.getChildByName("Panel_room");
-        this.roomsManager = Panel_room.addComponent("RoomsManager");
-
-        // 初始化街道
-        var Panel_street = this.node.getChildByName("Panel_room");
-        var StreetMap = cc.find("Panel_street/StreetMap", this.node)
-        StreetMap.addComponent("StreetManager");
+        this.shopManager = this.node.addComponent(ShopManager);
     },
 
     //玩家进入游戏
@@ -48,24 +41,84 @@ var GameView = cc.Class({
         var user = {
             floors: [
                 {
+                    floor: 0,
+                    guests: [
+                        {type: 1, id: 10},
+                        {type: 1, id: 11},
+                        {type: 1, id: 12}
+                    ],
+                },
+                {
                     floor: 1,
                     equips: [
-                        {level: 10, type: 1, x: 2, y: 2},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4}
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
                     ],
                     employs: [
-                        {level: 10, type: 1, x: 5, y: 5},
-                        {level: 15, type: 1, x: 2, y: 2},
-                        {level: 20, type: 1, x: 3, y: 3},
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
                     ],
                     cats: [
-                        {level: 10, type: 1, x: 5, y: 5},
-                        {level: 10, type: 1, x: 6, y: 6},
-                    ]
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        {type: 1, id: 10},
+                        {type: 1, id: 11},
+                        {type: 1, id: 12}
+                    ],
+                },
+                {
+                    floor: 2,
+                    equips: [
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
+                    ],
+                    employs: [
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
+                    ],
+                    cats: [
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        {type: 1, id: 10},
+                        {type: 1, id: 11},
+                        {type: 1, id: 12}
+                    ],
+                },
+                {
+                    floor: 3,
+                    equips: [
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
+                    ],
+                    employs: [
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
+                    ],
+                    cats: [
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        {type: 1, id: 10},
+                        {type: 1, id: 11},
+                        {type: 1, id: 12}
+                    ],
                 }
             ],
             gold: 100
@@ -73,8 +126,23 @@ var GameView = cc.Class({
 
         //初始化楼层
         for(var i=0; i<user.floors.length; i++){
-            this.roomsManager.initRoom(user);
+            this.shopManager.initShop(user);
         }
+    },
+
+    //游客进店
+    guestInShop: function(args){
+        var self = this;
+        let guests = [];
+        var num = Util.getRandom(1, 5);
+        for(var i=0; i<num; i++){
+            var guest = {type: 1, id: 10};
+            guests.push(guest);
+        }
+        this.shopManager.guestInShop(guests);
+        setTimeout(function () {
+            self.guestInShop();
+        }, 1000);
     },
 
     clickEvent: function(event, customEventData) {
