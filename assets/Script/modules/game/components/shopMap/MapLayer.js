@@ -47,10 +47,17 @@ var MapLayer = cc.Class({
     },
 
     //初始化地图
-    initMap: function(args){
+    initMap: function(args, mapManager){
         cc.log("initMap");
         //设置楼层
         this.floorLevel = args.floor;
+        this.mapManager = mapManager;
+        //初始化设备
+        var equips = args.equips || [];
+        for(var i=0; i<equips.length; i++){
+            this.addEquip(equips[i]);
+        }
+
         //初始化店员
         var employs = args.employs || [];
         for(var i=0; i<employs.length; i++){
@@ -60,6 +67,7 @@ var MapLayer = cc.Class({
         //初始化顾客
         var guests = args.guests || [];
         for(var i=0; i<guests.length; i++){
+            guests[i].moveSpeed = Util.getRandom(100, 180);
             this.addPlayerGuest(guests[i]);
         }
 
@@ -67,12 +75,6 @@ var MapLayer = cc.Class({
         var cats = args.cats || [];
         for(var i=0; i<cats.length; i++){
             this.addPlayerCat(cats[i]);
-        }
-
-        //初始化设备
-        var equips = args.equips || [];
-        for(var i=0; i<equips.length; i++){
-            this.addEquip(equips[i]);
         }
     },
 
@@ -171,6 +173,7 @@ var MapLayer = cc.Class({
 
     //增加顾客
     addPlayerGuest: function(args){
+        cc.log("增加顾客");
         var guestName = "PlayerGuest";
         var guestNode;
         if(!this.mapNodePool[guestName] || this.mapNodePool[guestName].length < 1){
@@ -206,7 +209,7 @@ var MapLayer = cc.Class({
         var enterPos = this.mapEnter[0];
         var exportPos = this.mapExport[0];
         this.aStarMap.getMovePathTiles(enterPos, exportPos, false);
-        console.log(this.aStarMap._astarGroup);
+        //console.log(this.aStarMap._astarGroup);
 
         var usefull = true;
         //设备是否可用
@@ -268,9 +271,20 @@ var MapLayer = cc.Class({
         return true;
     },
 
-    //获取楼层
-    getFloorLevel: function(){
+    //获取当前楼层
+    getCurFloorLevel: function(){
         return this.floorLevel;
+    },
+
+    //获取最大楼层,第一层是街道不算
+    getMaxFloorLevel: function(){
+        var floors = this.mapManager.getComponent("ShopManager").getFloors();
+        return floors.length - 1;
+    },
+
+    //获取楼层设备
+    getFloorEquips: function(){
+        return this.equipTab;
     },
     
     //地图入口
@@ -282,7 +296,12 @@ var MapLayer = cc.Class({
     //地图出口
     getMapExport: function () {
         let index = Util.getRandom(0, this.mapExport.length-1);
-        return this.mapEnter[index];
+        return this.mapExport[index];
+    },
+    
+    //营业厅入口
+    getShopEnter: function () {
+        //有需要的类实现
     }
 });
 module.export = MapLayer;

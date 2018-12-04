@@ -4,7 +4,6 @@
     2018/11/12
     Zero
 =======================================*/
-var ShopManager = require("ShopManager");
 var View = require("View");
 var GameView = cc.Class({
     extends: View,
@@ -32,7 +31,7 @@ var GameView = cc.Class({
     //初始化Ui
     initUi: function () {
         //初始化房间
-        this.shopManager = this.node.addComponent(ShopManager);
+        this.shopManager = this.node.addComponent("ShopManager");
     },
 
     //玩家进入游戏
@@ -67,9 +66,9 @@ var GameView = cc.Class({
                         {level: 10, type: 1, x: 6, y: 7},
                     ],
                     guests: [
-                        {type: 1, id: 10},
-                        {type: 1, id: 11},
-                        {type: 1, id: 12}
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
                     ],
                 },
                 {
@@ -91,9 +90,9 @@ var GameView = cc.Class({
                         {level: 10, type: 1, x: 6, y: 7},
                     ],
                     guests: [
-                        {type: 1, id: 10},
-                        {type: 1, id: 11},
-                        {type: 1, id: 12}
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
                     ],
                 },
                 {
@@ -115,26 +114,27 @@ var GameView = cc.Class({
                         {level: 10, type: 1, x: 6, y: 7},
                     ],
                     guests: [
-                        {type: 1, id: 10},
-                        {type: 1, id: 11},
-                        {type: 1, id: 12}
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
                     ],
                 }
             ],
             gold: 100
         };
 
-        //初始化楼层
-        for(var i=0; i<user.floors.length; i++){
-            this.shopManager.initShop(user);
-        }
+        //初始化商店
+        this.shopManager.initShop(user);
+
+        //顾客刷新
+        this.guestInShop();
     },
 
-    //游客进店
-    guestInShop: function(args){
+    //顾客进店
+    guestInShop: function(){
         var self = this;
         let guests = [];
-        var num = Util.getRandom(1, 5);
+        var num = Util.getRandom(1, 2);
         for(var i=0; i<num; i++){
             var guest = {type: 1, id: 10};
             guests.push(guest);
@@ -142,7 +142,12 @@ var GameView = cc.Class({
         this.shopManager.guestInShop(guests);
         setTimeout(function () {
             self.guestInShop();
-        }, 1000);
+        }, 2000);
+    },
+
+    //顾客进入楼层
+    guestEnterFloor: function(args){
+        this.shopManager.guestEnterFloor(args);
     },
 
     clickEvent: function(event, customEventData) {

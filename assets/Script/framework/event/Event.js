@@ -25,6 +25,7 @@ ET.EVT_OPEN_VIEW_ACTIVITY = getUID(); //打开活动界面
 ET.EVT_OPEN_VIEW_SHOP = getUID(); 	  //打开商城界面
 
 ET.EVT_OPEN_SCENCE_GAME = getUID();		//打开游戏界面
+ET.EVT_GUEST_ENTER_FLOOR = getUID();    //顾客进入楼层事件
 
 ET.EVT_GLOBAL_TOAST = getUID();     //全局吐司提示
 

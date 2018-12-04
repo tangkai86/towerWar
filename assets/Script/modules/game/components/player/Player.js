@@ -8,12 +8,14 @@ var Player = cc.Class({
         },
         level:  1,          //等级
         moveSpeed: {       //移动速度
-            default: 200,
+            default: 150,
             type: cc.Integer
         },
     },
-    onLoad () {
 
+    onLoad () {
+        this.floorLayer = null; //楼层逻辑管理
+        this.aStarMap = null;   //地图寻路管理
     },
 
     start () {
@@ -26,6 +28,8 @@ var Player = cc.Class({
 
     initPlayer: function (args) {
         this.aStarMap = this.node.parent.getComponent("AstarMap");
+        this.floorLayer = this.node.parent.getComponent("MapLayer");
+
         //player位置
         let playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
         this.node.setPosition(playerPosition);
@@ -140,6 +144,8 @@ var Player = cc.Class({
         let tile = this.aStarMap.getTileByPosition(this.node.position);
         tile.removePeople(this.node);
         this.node.active = false;
+        this.floorLayer = null;
+        this.aStarMap = null;
     }
 });
 

@@ -1,3 +1,4 @@
+//猫咪
 var Player = require("Player");
 var PlayerCat = cc.Class({
     extends: Player,

@@ -1,3 +1,4 @@
+//员工
 var Player = require("Player");
 var PlayerEmploy = cc.Class({
     extends: Player,
