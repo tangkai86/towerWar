@@ -1,3 +1,4 @@
+//猫咪
 var Player = require("Player");
 var PlayerCat = cc.Class({
     extends: Player,
@@ -15,12 +16,9 @@ var PlayerCat = cc.Class({
     //自由移动
     autoWalk: function () {
         var self = this;
-        var tileX = Math.floor(Math.random()*this.aStarMap.horTiles);
-        var tileY = Math.floor(Math.random()*this.aStarMap.verTiles);
-        this.moveToTile(cc.v2(tileX, tileY), function () {
+        this.moveToTile(this.getRandomPos(), function () {
             setTimeout(function () {
-                let FloorLayer = self.node.parent.getComponent("FloorLayer");
-                FloorLayer.removePlayerCat(self.node);
+                self.autoWalk();
             }, 1000);
         })
     },

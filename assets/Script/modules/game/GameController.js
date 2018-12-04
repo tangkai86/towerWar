@@ -25,7 +25,8 @@ var GameController = cc.Class({
 
     //注册模块监听事件
     initModuleEvent: function () {
-        
+        //顾客进入楼层
+        this.addModuleEvent(ET.EVT_GUEST_ENTER_FLOOR, this.guestEnterFloor.bind(this))
     },
 
     initView: function() {
@@ -35,6 +36,11 @@ var GameController = cc.Class({
         var viewNode = cc.instantiate(prefab);
         viewNode.parent = SceneLayer;
         return viewNode.getComponent("GameView");
+    },
+
+    //顾客进入楼层
+    guestEnterFloor: function(args){
+        this.view.guestEnterFloor(args);
     },
 
     openView: function(args) {

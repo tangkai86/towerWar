@@ -4,8 +4,6 @@
     2018/11/12
     Zero
 =======================================*/
-var RoomsManager = require("RoomsManager");
-var StreetManager = require("StreetManager");
 var View = require("View");
 var GameView = cc.Class({
     extends: View,
@@ -52,17 +50,11 @@ var GameView = cc.Class({
 
     //初始化Ui
     initUi: function () {
-        //初始化房间
-        var Panel_room = this.node.getChildByName("Panel_room");
-        this.roomsManager = Panel_room.addComponent("RoomsManager");
+        //初始化商店
+        this.shopManager = this.node.addComponent("ShopManager");
 
-        // 初始化街道
-        var Panel_street = this.node.getChildByName("Panel_room");
-        var StreetMap = cc.find("Panel_street/StreetMap", this.node)
-        StreetMap.addComponent("StreetManager");
-
+        //弹窗视图
         this.viewList = [];
-        
         this.viewList["ToolView"] = ET.EVT_OPEN_VIEW_TOOL;
         this.viewList["PetView"] = ET.EVT_OPEN_VIEW_PET;
         this.viewList["EquipView"] = ET.EVT_OPEN_VIEW_EQUIP;
@@ -82,42 +74,114 @@ var GameView = cc.Class({
         var user = {
             floors: [
                 {
+                    floor: 0,
+                    guests: [
+                        {type: 1, id: 10},
+                        {type: 1, id: 11},
+                        {type: 1, id: 12}
+                    ],
+                },
+                {
                     floor: 1,
                     equips: [
-                        {level: 10, type: 1, x: 2, y: 2},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4},
-                        {level: 15, type: 2, x: 4, y: 4}
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
                     ],
                     employs: [
-                        {level: 10, type: 1, x: 5, y: 5},
-                        {level: 15, type: 1, x: 2, y: 2},
-                        {level: 20, type: 1, x: 3, y: 3},
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
                     ],
                     cats: [
-                        {level: 10, type: 1, x: 5, y: 5},
-                        {level: 10, type: 1, x: 6, y: 6},
-                    ]
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
+                    ],
+                },
+                {
+                    floor: 2,
+                    equips: [
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
+                    ],
+                    employs: [
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
+                    ],
+                    cats: [
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
+                    ],
+                },
+                {
+                    floor: 3,
+                    equips: [
+                        {level: 10, type: 1, x: 1, y: 3},
+                        {level: 15, type: 1, x: 1, y: 5},
+                        {level: 15, type: 1, x: 6, y: 3},
+                        {level: 15, type: 2, x: 5, y: 5},
+                        {level: 15, type: 2, x: 6, y: 5}
+                    ],
+                    employs: [
+                        {level: 10, type: 1, x: 0, y: 0},
+                        {level: 15, type: 1, x: 0, y: 0},
+                        {level: 20, type: 1, x: 0, y: 0},
+                    ],
+                    cats: [
+                        {level: 10, type: 1, x: 6, y: 7},
+                        {level: 10, type: 1, x: 6, y: 7},
+                    ],
+                    guests: [
+                        // {type: 1, id: 10},
+                        // {type: 1, id: 11},
+                        // {type: 1, id: 12}
+                    ],
                 }
             ],
             gold: 100
         };
 
-        //初始化楼层
-        for(var i=0; i<user.floors.length; i++){
-            this.roomsManager.initRoom(user);
-        }
+        //初始化商店
+        this.shopManager.initShop(user);
 
-        this.flushData()
+        //顾客刷新
+        this.guestInShop();
     },
 
-    flushData: function () {
-    	this.roleNameString.string = "大帅哥";
-    	this.diamondString.string = 100;
-    	this.goldString.string = 300;
-    	this.catString.string = 500;
+    //顾客进店
+    guestInShop: function(){
+        var self = this;
+        let guests = [];
+        var num = Util.getRandom(1, 2);
+        for(var i=0; i<num; i++){
+            var guest = {type: 1, id: 10};
+            guests.push(guest);
+        }
+        this.shopManager.guestInShop(guests);
+        setTimeout(function () {
+            self.guestInShop();
+        }, 2000);
+    },
+
+    //顾客进入楼层
+    guestEnterFloor: function(args){
+        this.shopManager.guestEnterFloor(args);
     },
 
     clickEvent: function(event, customEventData) {

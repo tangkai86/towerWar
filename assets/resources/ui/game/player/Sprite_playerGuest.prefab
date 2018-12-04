@@ -94,14 +94,14 @@
     }
   },
   {
-    "__type__": "25a2aWWaEFOLZq47zOdoz84",
+    "__type__": "ef289gXOqlF6qXu5xIaSQID",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "_className": "PlayerStreet",
+    "_className": "PlayerGuest",
     "level": 1,
     "moveSpeed": 200
   },

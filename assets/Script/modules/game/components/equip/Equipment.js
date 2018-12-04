@@ -17,7 +17,7 @@ var Equipment = cc.Class({
     },
     
     start () {
-        this.initTouchEvent(); //点击事件
+        //this.initTouchEvent(); //点击事件
     },
 
     update: function(dt){
@@ -34,6 +34,7 @@ var Equipment = cc.Class({
         self.node.on(cc.Node.EventType.TOUCH_START, function (event) {
             touchStart = true;
             self.packUpEquip();
+            event.stopPropagation();
         }, self.node);
         self.node.on(cc.Node.EventType.TOUCH_MOVE, function (event) {
             let touchPos = event.touch.getLocation();
@@ -171,8 +172,28 @@ var Equipment = cc.Class({
                 break;
             }
         }
-        cc.log("设备不可使用:y:"+this.node.position.y);
+        //cc.log("设备不可使用:y:"+this.node.position.y);
         return usefull;
+    },
+
+    //获取设备使用位置
+    getEquipUsePos: function(){
+        let equipBordersPos = this.getEquipBordersPos(); //获取设备周边瓦片Pos
+        let useTile;
+        for(let i=0; i<equipBordersPos.length; i++){
+            let tile = this.aStarMap.getTileByPos(equipBordersPos[i]);
+            if(tile && tile.isCanCross()){
+                if(!useTile){
+                    useTile = tile;
+                }else if(tile.getPeople().length < useTile.getPeople().length){
+                    useTile = tile;
+                }
+            }
+        }
+        if(!useTile){
+            cc.log("设备不可使用:"+this.getEquipPosition().x + " :" + this.getEquipPosition().y);
+        }
+        return useTile.position;
     },
 
     //获取设备周边瓦片pos

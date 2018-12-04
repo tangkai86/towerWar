@@ -8,12 +8,14 @@ var Player = cc.Class({
         },
         level:  1,          //等级
         moveSpeed: {       //移动速度
-            default: 200,
+            default: 150,
             type: cc.Integer
         },
     },
-    onLoad () {
 
+    onLoad () {
+        this.floorLayer = null; //楼层逻辑管理
+        this.aStarMap = null;   //地图寻路管理
     },
 
     start () {
@@ -26,6 +28,7 @@ var Player = cc.Class({
 
     initPlayer: function (args) {
         this.aStarMap = this.node.parent.getComponent("AstarMap");
+        this.floorLayer = this.node.parent.getComponent("MapLayer");
 
         //player位置
         let playerPosition = this.aStarMap.getCenterByTilePos(cc.v2(args.x, args.y));
@@ -39,13 +42,24 @@ var Player = cc.Class({
     //自由移动
     autoWalk: function () {
         var self = this;
-        var tileX = Math.floor(Math.random()*this.aStarMap.horTiles);
-        var tileY = Math.floor(Math.random()*this.aStarMap.verTiles);
-        this.moveToTile(cc.v2(tileX, tileY), function () {
+        this.moveToTile(self.getRandomPos(), function () {
             setTimeout(function () {
                 self.autoWalk();
             }, 1000);
         })
+    },
+
+    //获取随机位置
+    getRandomPos: function(){
+        var tileX = Util.getRandom(0, this.aStarMap.horTiles-1);
+        var tileY = Util.getRandom(0, this.aStarMap.verTiles-1);
+        var randomPos = cc.v2(tileX,tileY);
+        var tile = this.aStarMap.getTileByPos(randomPos);
+        if(tile.isCanCross()){
+            return randomPos;
+        }else {
+            return this.getRandomPos();
+        }
     },
 
     //移动到瓦片
@@ -57,7 +71,9 @@ var Player = cc.Class({
 
         //无路可走
         if (movePathTiles.length <= 1) {
-            cc.log('cannot find path');
+            if(movePathTiles.length <= 0){
+                cc.log('cannot find path:');
+            }
             if(moveCb) moveCb();
             return;
         }
@@ -128,6 +144,8 @@ var Player = cc.Class({
         let tile = this.aStarMap.getTileByPosition(this.node.position);
         tile.removePeople(this.node);
         this.node.active = false;
+        this.floorLayer = null;
+        this.aStarMap = null;
     }
 });
 

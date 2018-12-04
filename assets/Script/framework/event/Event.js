@@ -31,6 +31,7 @@ ET.EVT_OPEN_VIEW_PET = getUID(); 		//打开宠物界面
 ET.EVT_OPEN_VIEW_TOOL = getUID(); 		//打开道具界面
 
 ET.EVT_OPEN_SCENCE_GAME = getUID();		//打开游戏界面
+ET.EVT_GUEST_ENTER_FLOOR = getUID();    //顾客进入楼层事件
 
 ET.EVT_GLOBAL_TOAST = getUID();     //全局吐司提示
 
